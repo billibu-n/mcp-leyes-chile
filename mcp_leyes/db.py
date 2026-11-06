@@ -75,12 +75,24 @@ def guardar_versiones(con, id_norma: int, versiones: list[dict]) -> int:
     return len(filas)
 
 
+MAX_TOKENS = 24
+MAX_TOKEN = 64
+
+
 def _limpiar(q: str) -> str:
     return " ".join(t for t in q.replace('"', " ").split() if t)
 
 
+def recortar(q: str) -> tuple[str, bool]:
+    """Corta la consulta a 24 terminos de 64 chars: 6000 terminos tardaban 44 s."""
+    trozos = _limpiar(q).split()
+    recortado = len(trozos) > MAX_TOKENS or any(len(t) > MAX_TOKEN for t in trozos)
+    tokens = [t[:MAX_TOKEN] for t in trozos[:MAX_TOKENS]]
+    return " ".join(tokens), recortado
+
+
 def buscar(con, q: str, limite: int = 10, solo_vigentes: bool = True) -> list[dict]:
-    tokens = _limpiar(q)
+    tokens, _ = recortar(q)
     if not tokens:
         return []
     consulta = " ".join(f'"{t}"*' for t in tokens.split())
@@ -103,13 +115,26 @@ def buscar(con, q: str, limite: int = 10, solo_vigentes: bool = True) -> list[di
 
 
 def _clave_articulo(nombre: str) -> str:
-    return str(nombre or "").replace("°", "").replace("º", "").strip().rstrip(".").strip().lower()
+    """Clave del articulo: numero + bis/ter, ignorando sufijos como '(DEL ART. 2)'.
+
+    Acepta '1545', '1545 bis', 'art. 1545' y 'artículo 1545'.
+    """
+    import re
+    limpio = str(nombre or "").replace("°", "").replace("º", "").strip()
+    limpio = re.sub(r"^(?:art[ií]culo|art)\.?\s*", "", limpio, flags=re.I)
+    m = re.match(r"(\d+)\s*(bis|ter|quater)?", limpio, re.I)
+    if not m:
+        return limpio.rstrip(".").lower()
+    return f"{m.group(1)}{(m.group(2) or '').lower()}"
 
 
 def traer_articulo(con, id_norma: int, numero: str) -> list[dict]:
+    """Busca por clave. Prefiltra en SQL: cargar 2.800 articulos costaba 180 ms por llamada."""
     objetivo = _clave_articulo(numero)
+    digitos = "".join(c for c in objetivo if c.isdigit()) or objetivo
     filas = con.execute(
-        "SELECT * FROM parte WHERE id_norma=? AND clase LIKE 'articulo%'", (id_norma,)
+        "SELECT * FROM parte WHERE id_norma=? AND clase LIKE 'articulo%' AND nombre LIKE ?",
+        (id_norma, f"{digitos}%"),
     ).fetchall()
     return [dict(f) for f in filas if _clave_articulo(f["nombre"]) == objetivo]
 

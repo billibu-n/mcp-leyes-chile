@@ -1,0 +1,77 @@
+{
+  "id": "compraventa",
+  "titulo": "CONTRATO DE COMPRAVENTA",
+  "campos": [
+    {
+      "nombre": "VENDEDOR",
+      "etiqueta": "Nombre completo del vendedor",
+      "requerido": true
+    },
+    {
+      "nombre": "RUT_VENDEDOR",
+      "etiqueta": "RUT del vendedor",
+      "requerido": true
+    },
+    {
+      "nombre": "COMPRADOR",
+      "etiqueta": "Nombre completo del comprador",
+      "requerido": true
+    },
+    {
+      "nombre": "RUT_COMPRADOR",
+      "etiqueta": "RUT del comprador",
+      "requerido": true
+    },
+    {
+      "nombre": "BIEN",
+      "etiqueta": "Descripción del bien (rol, dirección, inscripción)",
+      "requerido": true
+    },
+    {
+      "nombre": "PRECIO",
+      "etiqueta": "Precio en pesos",
+      "requerido": true
+    },
+    {
+      "nombre": "FORMA_PAGO",
+      "etiqueta": "Forma y plazo de pago",
+      "requerido": true
+    },
+    {
+      "nombre": "CIUDAD",
+      "etiqueta": "Ciudad",
+      "requerido": true
+    },
+    {
+      "nombre": "FECHA",
+      "etiqueta": "Fecha (AAAA-MM-DD)",
+      "requerido": true
+    }
+  ],
+  "parrafos": [
+    "En {{CIUDAD}}, a {{FECHA}}, entre don(ña) {{VENDEDOR}}, RUT {{RUT_VENDEDOR}}, en adelante el vendedor, y don(ña) {{COMPRADOR}}, RUT {{RUT_COMPRADOR}}, en adelante el comprador, se ha convenido el siguiente contrato de compraventa.",
+    "PRIMERO: El vendedor vende al comprador el bien: {{BIEN}}.",
+    "SEGUNDO: El precio es de ${{PRECIO}}, que se pagará de la siguiente forma: {{FORMA_PAGO}}.",
+    "TERCERO: El vendedor declara ser dueño del bien y que se encuentra libre de gravámenes, prohibiciones y litigios, salvo los que se indican.",
+    "CUARTO: Las partes firman en dos ejemplares de igual tenor."
+  ],
+  "cierre": [
+    "_______________________________",
+    "{{VENDEDOR}} — RUT {{RUT_VENDEDOR}}",
+    "",
+    "_______________________________",
+    "{{COMPRADOR}} — RUT {{RUT_COMPRADOR}}"
+  ],
+  "base_legal": [
+    {
+      "id_norma": 172986,
+      "articulo": "1793",
+      "nota": "definicion del contrato de compraventa"
+    },
+    {
+      "id_norma": 172986,
+      "articulo": "1801",
+      "nota": "perfeccionamiento y regla especial de los bienes raices"
+    }
+  ]
+}

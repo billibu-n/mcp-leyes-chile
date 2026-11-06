@@ -33,8 +33,14 @@ def nombre_norma(meta: dict) -> str:
 
 def construir(meta: dict, parte: dict) -> dict:
     """Objeto de cita completo, con huecos declarados."""
+    idn = meta.get("id_norma") or meta.get("id")
+    meta = {**meta, "id_norma": idn}
     texto = (parte.get("texto") or "").strip()
-    numero = str(parte.get("nombre") or "").replace("°", "").replace("º", "").strip().rstrip(".").strip()
+    bruto = str(parte.get("nombre") or "").replace("°", "").replace("º", "").strip()
+    import re as _re
+    m = _re.match(r"(\d+)\s*(bis|ter|quater)?", bruto, _re.I)
+    numero = (m.group(1) + (m.group(2) or "").lower()) if m else bruto.rstrip(".")
+    variante = "texto alterno" if "(" in bruto else None
     desde = parte.get("fecha_version") or ""
     hueco = None
     if bcn.es_centinela(desde):
@@ -43,13 +49,19 @@ def construir(meta: dict, parte: dict) -> dict:
     estado = "derogado" if (parte.get("derogado") == "derogado") else "vigente"
     if parte.get("transitorio") == "transitorio":
         estado = "transitorio"
-    cita = f"{nombre_norma(meta)}, art. {numero}"
-    if desde:
-        cita += f", texto vigente desde {desde}"
+    if estado == "derogado":
+        cita = f"{nombre_norma(meta)}, art. {numero} (derogado"
+        cita += f", última versión {desde})" if desde else ")"
+        hueco = "articulo derogado: no esta vigente; no debe citarse como derecho aplicable"
+    else:
+        cita = f"{nombre_norma(meta)}, art. {numero}"
+        if desde:
+            cita += f", texto vigente desde {desde}"
     return {
         "idNorma": meta.get("id_norma"),
         "norma": nombre_norma(meta),
         "articulo": numero,
+        "variante": variante,
         "texto": texto,
         "estado": estado,
         "vigente_desde": desde or None,

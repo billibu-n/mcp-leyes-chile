@@ -86,6 +86,28 @@ def es_centinela(fecha: str | None) -> bool:
     return bool(fecha) and str(fecha).startswith("2222")
 
 
+def fecha_valida(fecha: str) -> str | None:
+    """None si la fecha sirve para pedir una version; si no, el motivo del rechazo.
+
+    Sin esto, 'ayer' o '2020-13-45' viajaban a LeyChile, tardaban hasta 90 s y
+    volvian con el texto de la ultima version como si fuera la pedida.
+    """
+    import datetime as _dt
+    texto = str(fecha or "").strip()
+    try:
+        dia = _dt.date.fromisoformat(texto)
+    except ValueError:
+        return f"'{texto}' no es una fecha AAAA-MM-DD valida"
+    if es_centinela(texto):
+        return ("2222-02-02 es el centinela de vigencia diferida por evento, no una fecha; "
+                "consulta cl_versiones para ver el rango real")
+    if dia.year < 1900:
+        return "el corpus no tiene versiones anteriores a 1900"
+    if dia > _dt.date.today():
+        return f"{texto} esta en el futuro: hoy es {_dt.date.today().isoformat()}"
+    return None
+
+
 def _ln(elem) -> str:
     from lxml import etree
     q = etree.QName(elem)

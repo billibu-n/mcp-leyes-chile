@@ -3,14 +3,15 @@ from __future__ import annotations
 
 import os
 import re
+from contextlib import contextmanager
 from pathlib import Path
 
 from mcp.server.mcpserver import MCPServer
 
 from . import bcn, citas, db, documentos, notaria
 
-RAIZ = Path(__file__).resolve().parent.parent
-DB = os.environ.get("MCP_LEYES_DB", str(RAIZ / "data" / "corpus.db"))
+CASA = Path(os.environ.get("MCP_LEYES_HOME") or Path.home() / ".mcp-leyes-chile")
+DB = os.environ.get("MCP_LEYES_DB", str(CASA / "corpus.db"))
 
 INSTRUCCIONES = """Servidor de leyes chilenas y labor notarial.
 Orden de uso: cl_buscar -> cl_articulo -> cl_citar. Nunca cites sin llamar a cl_articulo.
@@ -20,14 +21,20 @@ La cobertura real se consulta con cl_cobertura; no la supongas."""
 
 mcp = MCPServer(
     name="mcp-leyes-chile",
-    version="0.2.0",
+    version="0.2.2",
     instructions=INSTRUCCIONES,
     description="Leyes chilenas con cita verificable, fichas notariales y documentos .odt/.pdf",
 )
 
 
+@contextmanager
 def _con():
-    return db.conectar(DB)
+    """Conexion por llamada y cerrada: 100 llamadas dejaban 100 descriptores abiertos."""
+    con = db.conectar(DB)
+    try:
+        yield con
+    finally:
+        con.close()
 
 
 def _error(codigo: str, detalle: str) -> dict:
@@ -37,41 +44,61 @@ def _error(codigo: str, detalle: str) -> dict:
 @mcp.tool()
 def cl_buscar(q: str, limite: int = 10, solo_vigentes: bool = True) -> dict:
     """Busca articulos por texto. Devuelve idNorma, norma, articulo y fragmento."""
-    con = _con()
-    filas = db.buscar(con, q, max(1, min(limite, 50)), solo_vigentes)
-    n = db.norma(con, filas[0]["id_norma"]) if filas else None
-    return {"consulta": q, "total": len(filas), "resultados": filas,
-            "norma_ejemplo": n["titulo"] if n else None}
+    tope = max(1, min(int(limite) if limite is not None else 10, 50))
+    with _con() as con:
+        filas = db.buscar(con, q, tope, solo_vigentes)
+        n = db.norma(con, filas[0]["id_norma"]) if filas else None
+    _, recortado = db.recortar(q or "")
+    salida = {"consulta": q, "total": len(filas), "resultados": filas,
+              "norma_ejemplo": n["titulo"] if n else None}
+    avisos = []
+    if recortado:
+        avisos.append(f"consulta recortada a {db.MAX_TOKENS} terminos de {db.MAX_TOKEN} caracteres")
+    if not filas:
+        avisos.append("sin resultados en el corpus local; el tema puede estar fuera de "
+                      "cobertura: consulta cl_cobertura antes de concluir que no existe")
+    if avisos:
+        salida["aviso"] = "; ".join(avisos)
+    return salida
 
 
 @mcp.tool()
 def cl_articulo(id_norma: int, articulo: str, vigente_al: str = "") -> dict:
     """Texto literal + objeto de cita. Sin fuente no devuelve texto."""
-    con = _con()
-    meta = db.norma(con, id_norma)
-    if not meta:
-        return _error("not_found", f"norma {id_norma} no esta en el indice; corre la ingesta")
-    meta["descargado"] = meta.get("descargado") or ""
     if vigente_al:
-        try:
-            texto = bcn.texto_version(id_norma, vigente_al)
-        except bcn.BCNError as exc:
-            return _error("upstream_error", str(exc))
-        hallado = bcn.articulo_de_texto(texto, articulo)
-        if not hallado:
-            return _error("not_found", f"el articulo {articulo} no aparece en la version de {vigente_al}")
-        actual = db.traer_articulo(con, id_norma, articulo)
-        sin_cambios = bool(actual) and actual[0]["texto"][:200] == hallado["texto"][:200]
-        return {"idNorma": id_norma, "articulo": articulo, "texto": hallado["texto"],
-                "vigente_al": vigente_al, "metodo": "recorte por cabecera sobre texto historico",
-                "confianza": hallado["confianza"], "sin_cambios": sin_cambios,
-                "notas_recortadas": hallado.get("notas_recortadas", False),
-                "fuente": f"https://www.leychile.cl/N?i={id_norma}&f={vigente_al}",
-                "aviso": citas.AVISO, "hueco": hallado["hueco"]}
-    partes = db.traer_articulo(con, id_norma, articulo)
-    if not partes:
-        return _error("not_found", f"articulo {articulo} no existe en la norma {id_norma}")
-    cita = citas.construir(meta, partes[0])
+        motivo = bcn.fecha_valida(vigente_al)
+        if motivo:
+            return _error("invalid_arg", motivo)
+    with _con() as con:
+        meta = db.norma(con, id_norma)
+        if not meta:
+            return _error("not_found", f"norma {id_norma} no esta en el indice; corre la ingesta")
+        meta["descargado"] = meta.get("descargado") or ""
+        if vigente_al:
+            try:
+                texto = bcn.texto_version(id_norma, vigente_al)
+            except bcn.BCNError as exc:
+                return _error("upstream_error", str(exc))
+            hallado = bcn.articulo_de_texto(texto, articulo)
+            if not hallado:
+                return _error("not_found",
+                              f"el articulo {articulo} no aparece en la version de {vigente_al}")
+            actual = db.traer_articulo(con, id_norma, articulo)
+            sin_cambios = bool(actual) and actual[0]["texto"][:200] == hallado["texto"][:200]
+            return {"idNorma": id_norma, "articulo": articulo, "texto": hallado["texto"],
+                    "vigente_al": vigente_al, "metodo": "recorte por cabecera sobre texto historico",
+                    "confianza": hallado["confianza"], "sin_cambios": sin_cambios,
+                    "notas_recortadas": hallado.get("notas_recortadas", False),
+                    "fuente": f"https://www.leychile.cl/N?i={id_norma}&f={vigente_al}",
+                    "aviso": citas.AVISO, "hueco": hallado["hueco"]}
+        partes = db.traer_articulo(con, id_norma, articulo)
+        if not partes:
+            nombre = citas.nombre_norma(meta)
+            return _error("not_found",
+                          f"el articulo {articulo} no existe en {nombre} "
+                          f"(idNorma {id_norma}, {meta.get('fecha_publicacion') or 'sin fecha'}); "
+                          f"fuente: https://www.leychile.cl/N?i={id_norma}")
+        cita = citas.construir(meta, partes[0])
     if len(partes) > 1:
         cita["coincidencias"] = len(partes)
         cita["hueco"] = (cita.get("hueco") or "") + " varios articulos comparten el numero; se devuelve el primero"
@@ -81,8 +108,8 @@ def cl_articulo(id_norma: int, articulo: str, vigente_al: str = "") -> dict:
 @mcp.tool()
 def cl_versiones(id_norma: int) -> dict:
     """Historial de versiones con rango de vigencia y advertencia de centinela."""
-    con = _con()
-    filas = db.versiones_de(con, id_norma)
+    with _con() as con:
+        filas = db.versiones_de(con, id_norma)
     if not filas:
         return _error("not_found", f"sin historial para {id_norma}; corre la ingesta")
     return {"idNorma": id_norma, "versiones": filas,
@@ -91,25 +118,27 @@ def cl_versiones(id_norma: int) -> dict:
 
 
 @mcp.tool()
-def cl_citar(referencias: list[str]) -> dict:
+def cl_citar(referencias: list[str] | str) -> dict:
     """Verifica un lote de referencias. Devuelve ok, faltantes y sin_fuente_verificable."""
-    con = _con()
+    if isinstance(referencias, str):
+        referencias = [referencias]
     ok, faltan, sin_fuente = [], [], []
-    for ref in referencias:
-        idn, art = _parsear_ref(ref)
-        if not idn:
-            sin_fuente.append({"referencia": ref, "motivo": "no se pudo identificar la norma"})
-            continue
-        meta = db.norma(con, idn)
-        if not meta:
-            faltan.append({"referencia": ref, "motivo": f"norma {idn} fuera del indice"})
-            continue
-        partes = db.traer_articulo(con, idn, art) if art else []
-        if art and not partes:
-            faltan.append({"referencia": ref, "motivo": "articulo inexistente"})
-            continue
-        ok.append(citas.construir(meta, partes[0]) if partes else
-                  {"idNorma": idn, "norma": citas.nombre_norma(meta), "cita": citas.nombre_norma(meta)})
+    with _con() as con:
+        for ref in referencias:
+            idn, art = _parsear_ref(str(ref))
+            if not idn:
+                sin_fuente.append({"referencia": ref, "motivo": "no se pudo identificar la norma"})
+                continue
+            meta = db.norma(con, idn)
+            if not meta:
+                faltan.append({"referencia": ref, "motivo": f"norma {idn} fuera del indice"})
+                continue
+            partes = db.traer_articulo(con, idn, art) if art else []
+            if art and not partes:
+                faltan.append({"referencia": ref, "motivo": "articulo inexistente"})
+                continue
+            ok.append(citas.construir(meta, partes[0]) if partes else
+                      {"idNorma": idn, "norma": citas.nombre_norma(meta), "cita": citas.nombre_norma(meta)})
     return {"ok": ok, "faltantes": faltan, "sin_fuente_verificable": sin_fuente}
 
 
@@ -133,21 +162,38 @@ def cl_notaria(ficha: str = "", q: str = "") -> dict:
 
 
 @mcp.tool()
-def cl_documento(plantilla: str, datos: dict, formato: str = "odt") -> dict:
-    """Genera .odt (prioritario) y deriva .pdf/.docx. Marca de borrador obligatoria."""
+def cl_documento(plantilla: str, datos: dict, formato: str = "pdf") -> dict:
+    """Genera .odt (siempre) y deriva .pdf/.docx/.md. Marca de borrador obligatoria."""
     formatos = {"odt": ("odt",), "pdf": ("odt", "pdf"), "docx": ("odt", "docx"),
-                "md": ("odt", "md")}.get(formato, ("odt", "pdf"))
+                "md": ("odt", "md")}
+    if formato not in formatos:
+        return _error("invalid_arg", f"formato no soportado: {formato}; usa {', '.join(formatos)}")
     try:
-        return documentos.generar(plantilla, datos, formatos)
+        r = documentos.generar(plantilla, datos, formatos[formato])
     except documentos.DocumentoError as exc:
         return {"error": str(exc)}
+    definicion = documentos.plantillas().get(plantilla) or {}
+    with _con() as con:
+        bases = []
+        for ref in definicion.get("base_legal") or []:
+            partes = db.traer_articulo(con, ref["id_norma"], ref["articulo"])
+            if not partes:
+                continue
+            meta = db.norma(con, ref["id_norma"])
+            meta["descargado"] = meta.get("descargado") or ""
+            c = citas.construir(meta, partes[0])
+            bases.append({"cita": c["cita"], "fuente": c["fuente"],
+                          "texto": c["texto"][:300], "nota": ref.get("nota", "")})
+    r["base_legal"] = bases or ("sin_fuente: plantilla generica; el usuario debe verificar el "
+                                "acto y sus requisitos antes de presentarlo")
+    return r
 
 
 @mcp.tool()
 def cl_cobertura() -> dict:
     """Que cubre el servidor, hasta cuando, y que NO cubre."""
-    con = _con()
-    c = db.cobertura(con)
+    with _con() as con:
+        c = db.cobertura(con)
     huecos = []
     for f in notaria.cargar().values():
         for campo in ("requisitos", "documentos"):

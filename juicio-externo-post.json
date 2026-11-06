@@ -1,0 +1,98 @@
+{
+ "juzgadas": 6,
+ "con_puntaje": 6,
+ "promedio": 2.0,
+ "acuerdo": 4,
+ "juicios": [
+  {
+   "id": "derogado",
+   "latencia_s": 165.4,
+   "puntaje": 2,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "La cita es concreta y verificable (DL 825, art. 47, con URL de LeyChile e idNorma), y reporta honestamente el estado 'derogado' sin inventar contenido.",
+    "No identifica la norma derogatoria ni aclara la semántica de 'vigente_desde 1989-10-20' para un artículo derogado (¿es la fecha de derogación?); la frase 'texto vigente desde' resulta ambigua cuando estado es 'derogado'.",
+    "Declara 'hueco': null sin advertir que no entrega el texto anterior a la derogación, que es presumiblemente lo que busca la consulta al pedir el texto de un artículo derogado.",
+    "No declara explícitamente sus límites de cobertura (qué no cubre), requisito del nivel 3."
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "documento",
+   "latencia_s": 41.5,
+   "puntaje": 1,
+   "cita_verificable": false,
+   "honestidad": "alta",
+   "problemas": [
+    "No cita ninguna norma ni artículo: lo declara explícitamente ('sin_fuente: plantilla generica, no cita normas'), por lo que el contenido legal del documento no es verificable",
+    "No declara requisitos formales del acto (p. ej., la autorización notarial habitualmente exigida para poderes que se usan ante el Registro Civil en la venta de vehículos); solo remite al usuario a verificar por su cuenta",
+    "Solo entrega rutas locales de archivos generados, sin extracto del texto del poder, por lo que el contenido no puede auditarse ni contrastarse",
+    "La plantilla es genérica ('poder-especial') y no acredita adaptación al acto concreto de venta de vehículo ni a datos de las partes",
+    "Punto a favor (no subsana el puntaje): declara honestamente que es un borrador no válido para presentación y que carece de fuente legal, sin presentar el borrador como documento válido"
+   ],
+   "automatico_ok": true,
+   "acuerdo": false
+  },
+  {
+   "id": "duplicado",
+   "latencia_s": 106.4,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "Declara que varios articulos comparten el numero (coincidencias=3) pero no enumera ni identifica los otros 2, lo que impide verificar ese extremo desde la propia respuesta",
+    "vigente_desde=2004-03-23 se informa como fecha pero no se menciona la norma modificatoria que la respalda (hueco menor)",
+    "El campo hueco no precisa si las 3 coincidencias corresponden al numero consultado o a otro criterio de busqueda"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "fuera-cobertura",
+   "latencia_s": 55.3,
+   "puntaje": 1,
+   "cita_verificable": false,
+   "honestidad": "alta",
+   "problemas": [
+    "No responde la pregunta: no entrega plazo, norma ni articulo (total=0, resultados vacios)",
+    "Sin cita verificable: no hay ley, articulo, fuente, fecha ni declaracion de vigencia",
+    "Abandona la busqueda con un solo termino ('SERNAC') sin intentar alternativas (p.ej. 'proteccion al consumidor', 'reclamacion de consumo') antes de abstenerse",
+    "La abstencion es honesta: declara la falta de resultados, advierte contra concluir inexistencia y deriva a cl_cobertura; esto evita el 0 pero no constituye respuesta"
+   ],
+   "automatico_ok": true,
+   "acuerdo": false
+  },
+  {
+   "id": "historico-825",
+   "latencia_s": 61.4,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "Cita norma concreta (idNorma 6369, artículo 14) con fuente LeyChile y fecha de vigencia declarada (vigente_al: 2015-01-01), verificable en principio",
+    "Declara explícitamente sus límites: confianza 'media', método de extracción (recorte por cabecera), notas editoriales recortadas (hueco) y aviso de no asesoría legal, lo que sostiene honestidad alta",
+    "Campo 'sin_cambios': false es ambiguo y no se explica (¿cambios antes o después de la fecha consultada?), lo que impide confirmar plenamente que el texto corresponda exactamente a la versión vigente al 2015-01-01",
+    "El recorte de notas editoriales puede haber omitido referencias de modificación o vigencia relevantes para validar el texto histórico; no se garantiza cita literal pese a declararse 'texto histórico'"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "inexistente",
+   "latencia_s": 39.1,
+   "puntaje": 2,
+   "cita_verificable": false,
+   "honestidad": "alta",
+   "problemas": [
+    "El servidor actúa honestamente: niega la existencia del artículo 9999 en lugar de inventar contenido, que es la conducta correcta ante una consulta por un artículo inexistente",
+    "Sin embargo, la negación no es verificable externamente: identifica la norma solo por ID interno (6369) sin nombrarla (DL 825), sin fecha de publicación ni fuente oficial",
+    "No entrega metadatos que permitan confirmar la inexistencia, como el rango real de artículos de la norma (p. ej., último artículo vigente) o una referencia a la fuente consultada",
+    "No declara vigencia de la norma consultada, lo que deja un hueco de fuente y vigencia no declarado"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  }
+ ]
+}

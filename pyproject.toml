@@ -4,14 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mcp-leyes-chile"
-version = "0.2.0"
+version = "0.2.2"
 description = "Servidor MCP de leyes chilenas con cita verificable y documentos .odt/.pdf"
 requires-python = ">=3.11"
 license = {text = "Apache-2.0"}
+readme = "README.md"
 dependencies = ["mcp>=2,<3", "lxml>=5", "PyYAML>=6"]
+
+[project.urls]
+Repository = "https://github.com/billibu-n/mcp-leyes-chile"
 
 [project.scripts]
 mcp-leyes-chile = "mcp_leyes.__main__:main"
 
 [tool.setuptools]
 packages = ["mcp_leyes"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+mcp_leyes = ["notaria/*.yaml", "plantillas/*.json"]

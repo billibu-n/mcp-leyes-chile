@@ -10,15 +10,19 @@ import json
 import os
 import shutil
 import subprocess
+import tempfile
 import threading
+import uuid
 import zipfile
 from pathlib import Path
 from xml.sax.saxutils import escape
 
-RAIZ = Path(__file__).resolve().parent.parent
-PLANTILLAS = RAIZ / "plantillas"
-SALIDAS = RAIZ / "salidas"
-PERFIL_LO = RAIZ / ".lo-profile"
+PAQUETE = Path(__file__).resolve().parent
+PLANTILLAS = PAQUETE / "plantillas"
+# Un paquete instalado vive en site-packages (solo lectura): las salidas van al home.
+CASA = Path(os.environ.get("MCP_LEYES_HOME") or Path.home() / ".mcp-leyes-chile")
+SALIDAS = Path(os.environ.get("MCP_LEYES_SALIDAS") or CASA / "salidas")
+PERFIL_LO = Path(tempfile.gettempdir()) / "mcp-leyes-lo-profile"
 _candado = threading.Lock()
 
 CONTENT = """<?xml version="1.0" encoding="UTF-8"?>
@@ -100,19 +104,21 @@ def _validar(plantilla: dict, datos: dict) -> None:
         raise DocumentoError(f"[invalid_arg] faltan campos: {', '.join(faltan)}")
 
 
-def _parrafos(plantilla: dict, datos: dict) -> str:
-    def rellenar(t: str) -> str:
-        for k, v in datos.items():
-            t = t.replace("{{%s}}" % k, escape(str(v)))
-        return t
+def _rellenar(texto: str, datos: dict) -> str:
+    """Sustituye {{CAMPO}}. Con .format(), '{{CAMPO}}' queda como '{CAMPO}': no sustituye."""
+    for k, v in datos.items():
+        texto = texto.replace("{{%s}}" % k, escape(str(v)))
+    return texto
 
+
+def _parrafos(plantilla: dict, datos: dict) -> str:
     salida = ['  <text:p text:style-name="Aviso">BORRADOR — NO VÁLIDO PARA PRESENTACIÓN</text:p>',
               f'  <text:h text:style-name="Titulo" text:outline-level="1">{escape(plantilla["titulo"])}</text:h>']
     for p in plantilla["parrafos"]:
-        salida.append(f'  <text:p text:style-name="Cuerpo">{rellenar(p)}</text:p>')
+        salida.append(f'  <text:p text:style-name="Cuerpo">{_rellenar(p, datos)}</text:p>')
     for linea in plantilla.get("cierre", []):
         if linea:
-            salida.append(f'  <text:p text:style-name="Firma">{rellenar(linea)}</text:p>')
+            salida.append(f'  <text:p text:style-name="Firma">{_rellenar(linea, datos)}</text:p>')
         else:
             salida.append('  <text:p text:style-name="Firma"/>')
     return "\n".join(salida)
@@ -148,22 +154,32 @@ def _soffice(origen: Path, formato: str, outdir: Path) -> Path:
     return salida
 
 
+FORMATOS = {"odt", "pdf", "docx", "md"}
+
+
 def generar(plantilla_id: str, datos: dict, formatos=("odt", "pdf")) -> dict:
     plantilla = plantillas().get(plantilla_id)
     if not plantilla:
         raise DocumentoError(f"[not_found] plantilla desconocida: {plantilla_id}")
+    pedidos = tuple(formatos) or ("odt",)
+    desconocidos = [f for f in pedidos if f not in FORMATOS]
+    if desconocidos:
+        raise DocumentoError(f"[invalid_arg] formato no soportado: {', '.join(desconocidos)}; "
+                             f"usa {', '.join(sorted(FORMATOS))}")
+    # Carpeta propia por llamada: dos documentos a la vez se pisaban el mismo .odt.
     SALIDAS.mkdir(parents=True, exist_ok=True)
-    odt = crear_odt(plantilla, datos, SALIDAS / f"{plantilla_id}.odt")
+    carpeta = SALIDAS / f"{plantilla_id}-{uuid.uuid4().hex[:8]}"
+    carpeta.mkdir(parents=True, exist_ok=True)
+    odt = crear_odt(plantilla, datos, carpeta / f"{plantilla_id}.odt")
     rutas = {"odt": str(odt)}
-    if "pdf" in formatos:
-        rutas["pdf"] = str(_soffice(odt, "pdf", SALIDAS))
-    if "docx" in formatos:
-        rutas["docx"] = str(_soffice(odt, "docx", SALIDAS))
-    if "md" in formatos:
-        md = SALIDAS / f"{plantilla_id}.md"
+    if "pdf" in pedidos:
+        rutas["pdf"] = str(_soffice(odt, "pdf", carpeta))
+    if "docx" in pedidos:
+        rutas["docx"] = str(_soffice(odt, "docx", carpeta))
+    if "md" in pedidos:
+        md = carpeta / f"{plantilla_id}.md"
         md.write_text("\n\n".join([plantilla["titulo"]] + [
-            p.format(**{k: v for k, v in datos.items()}) for p in plantilla["parrafos"]]),
-            encoding="utf-8")
+            _rellenar(p, datos) for p in plantilla["parrafos"]]), encoding="utf-8")
         rutas["md"] = str(md)
     return {"plantilla": plantilla_id, "archivos": rutas,
             "aviso": "BORRADOR — NO VÁLIDO PARA PRESENTACIÓN"}

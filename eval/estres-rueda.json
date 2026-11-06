@@ -1,0 +1,254 @@
+{
+ "fecha": "2026-11-06T15:52:55",
+ "comprobaciones": 41,
+ "fallos": 0,
+ "ok": true,
+ "resultados": [
+  {
+   "id": "p01_tools",
+   "ok": true,
+   "detalle": "7 tools: ['cl_articulo', 'cl_buscar', 'cl_citar', 'cl_cobertura', 'cl_documento', 'cl_notaria', 'cl_versiones']",
+   "ms": 3
+  },
+  {
+   "id": "p02_tool_inexistente",
+   "ok": true,
+   "detalle": "CallToolResult: Unknown tool: cl_no_existe",
+   "ms": 3
+  },
+  {
+   "id": "p03_falta_argumento",
+   "ok": true,
+   "detalle": "rechazo controlado: Error executing tool cl_buscar: 1 validation error for cl_buscarArguments\nq\n  Fi",
+   "ms": 2
+  },
+  {
+   "id": "p04_concurrencia_correlacion",
+   "ok": true,
+   "detalle": "0 respuestas cruzadas de 40",
+   "ms": 54
+  },
+  {
+   "id": "p05_arranque",
+   "ok": true,
+   "detalle": "arranques: 0.78s, 0.78s, 0.79s",
+   "ms": 2350
+  },
+  {
+   "id": "b01_fts_hostil",
+   "ok": true,
+   "detalle": "0/17 queries rompen: []",
+   "ms": 54
+  },
+  {
+   "id": "b02_vacia",
+   "ok": true,
+   "detalle": "0 vacias mal tratadas",
+   "ms": 10
+  },
+  {
+   "id": "b03_query_gigante",
+   "ok": true,
+   "detalle": "53999 chars en 12 ms",
+   "ms": 12
+  },
+  {
+   "id": "b04_unicode",
+   "ok": true,
+   "detalle": "0 fallos unicode: []",
+   "ms": 32
+  },
+  {
+   "id": "b05_determinismo",
+   "ok": true,
+   "detalle": "20 resultados, iguales=True",
+   "ms": 10
+  },
+  {
+   "id": "b06_limite",
+   "ok": true,
+   "detalle": "fallos: []",
+   "ms": 19
+  },
+  {
+   "id": "b07_campos",
+   "ok": true,
+   "detalle": "20 resultados, 0 incompletos",
+   "ms": 4
+  },
+  {
+   "id": "a01_articulo",
+   "ok": true,
+   "detalle": "cita=DL 825, art. 14, texto vigente desde 2006-04-28",
+   "ms": 3
+  },
+  {
+   "id": "a02_bis",
+   "ok": true,
+   "detalle": "DL 825, art. 3bis, texto vigente desde 2024-10-24 | DL 825, art. 3bis, texto vigente desde 2024-10-24 | DL 825, art. 3bis, texto vigente desde 2024-10-24",
+   "ms": 7
+  },
+  {
+   "id": "a03_inexistente",
+   "ok": true,
+   "detalle": "[not_found] el articulo 99999 no existe en DL 825 (idNorma 6369, 1974-12-31); fuente: https://www.leychile.cl/N?i=6369",
+   "ms": 2
+  },
+  {
+   "id": "a04_norma_fuera",
+   "ok": true,
+   "detalle": "[not_found] norma 999999 no esta en el indice; corre la ingesta",
+   "ms": 2
+  },
+  {
+   "id": "a05_fecha_invalida",
+   "ok": true,
+   "detalle": "[]",
+   "ms": 9
+  },
+  {
+   "id": "a06_fecha_futura",
+   "ok": true,
+   "detalle": "[invalid_arg] 2222-02-02 es el centinela de vigencia diferida por evento, no una fecha; consulta cl_versiones para ver el rango real",
+   "ms": 2
+  },
+  {
+   "id": "a07_fecha_historica",
+   "ok": true,
+   "detalle": "confianza=media",
+   "ms": 15340
+  },
+  {
+   "id": "a08_formas_de_nombrar",
+   "ok": true,
+   "detalle": "1 variantes: DFL 1, art. 1545, texto vigente desde 2000-05-30",
+   "ms": 18
+  },
+  {
+   "id": "v01_versiones",
+   "ok": true,
+   "detalle": "83 versiones",
+   "ms": 3
+  },
+  {
+   "id": "v02_sin_historial",
+   "ok": true,
+   "detalle": "[not_found] sin historial para 999999; corre la ingesta",
+   "ms": 2
+  },
+  {
+   "id": "c01_lote_mixto",
+   "ok": true,
+   "detalle": "10/10 clasificadas",
+   "ms": 10
+  },
+  {
+   "id": "c02_string",
+   "ok": true,
+   "detalle": "string tratado como 1 referencias",
+   "ms": 3
+  },
+  {
+   "id": "c03_lote_grande",
+   "ok": true,
+   "detalle": "200/200 en 14 ms",
+   "ms": 15
+  },
+  {
+   "id": "n01_mayusculas",
+   "ok": true,
+   "detalle": "2 fichas",
+   "ms": 37
+  },
+  {
+   "id": "n02_inexistente",
+   "ok": true,
+   "detalle": "[not_found] sin ficha para esa consulta",
+   "ms": 36
+  },
+  {
+   "id": "n03_todas",
+   "ok": true,
+   "detalle": "27 fichas",
+   "ms": 37
+  },
+  {
+   "id": "d01_poder",
+   "ok": true,
+   "detalle": "pdf=31925B base=DFL 1, art. 2116, texto vigente desde 2000-05-30",
+   "ms": 895
+  },
+  {
+   "id": "d02_compraventa_base",
+   "ok": true,
+   "detalle": "base=[{\"cita\": \"DFL 1, art. 1793, texto vigente desde 2000-05-30\", \"fuente\": \"https://www.leychile.cl/N?i=172986\", \"texto\": \"",
+   "ms": 8
+  },
+  {
+   "id": "d03_faltan_campos",
+   "ok": true,
+   "detalle": "{\"error\": \"[invalid_arg] faltan campos: OTORGANTE, DOMICILIO, MANDATARIO, RUT_MANDATARIO, FACULTADES, CIUDAD, FECHA\"}",
+   "ms": 4
+  },
+  {
+   "id": "d04_plantilla",
+   "ok": true,
+   "detalle": "{\"error\": \"[not_found] plantilla desconocida: ../../etc/passwd\"}",
+   "ms": 3
+  },
+  {
+   "id": "d05_md",
+   "ok": true,
+   "detalle": "565 chars, sustituye=True",
+   "ms": 7
+  },
+  {
+   "id": "d06_concurrencia",
+   "ok": true,
+   "detalle": "[]",
+   "ms": 24
+  },
+  {
+   "id": "d07_xml_escapado",
+   "ok": true,
+   "detalle": "XML valido con &, < y comillas",
+   "ms": 15
+  },
+  {
+   "id": "d08_formato",
+   "ok": true,
+   "detalle": "{\"error\": \"[invalid_arg] formato no soportado: exe; usa odt, pdf, docx, md\"}",
+   "ms": 3
+  },
+  {
+   "id": "d09_docx",
+   "ok": true,
+   "detalle": "5384 B",
+   "ms": 653
+  },
+  {
+   "id": "k01_cobertura",
+   "ok": true,
+   "detalle": "{'normas': 9, 'articulos': 6246, 'versiones': 556, 'ultima_ingesta': '2026-11-06T15:51:51'} vs {'normas': 9, 'articulos': 6246, 'versiones': 556, 'ultima_ingesta': '2026-11-06T15:51:51'}",
+   "ms": 41
+  },
+  {
+   "id": "k02_aviso",
+   "ok": true,
+   "detalle": "Esto no es asesoría legal. Verifica con un profesional antes de actuar.",
+   "ms": 6
+  },
+  {
+   "id": "l01_secuencial",
+   "ok": true,
+   "detalle": "100 llamadas, p50=5ms p95=40ms errores=0",
+   "ms": 1690
+  },
+  {
+   "id": "l02_concurrente",
+   "ok": true,
+   "detalle": "40 concurrentes en 151ms, errores=0",
+   "ms": 151
+  }
+ ]
+}

@@ -1,0 +1,242 @@
+{
+ "fecha": "2026-11-06T15:31:52",
+ "comprobaciones": 39,
+ "fallos": 12,
+ "ok": false,
+ "resultados": [
+  {
+   "id": "p01_tools",
+   "ok": true,
+   "detalle": "7 tools: ['cl_articulo', 'cl_buscar', 'cl_citar', 'cl_cobertura', 'cl_documento', 'cl_notaria', 'cl_versiones']",
+   "ms": 3
+  },
+  {
+   "id": "p02_tool_inexistente",
+   "ok": false,
+   "detalle": "CallToolResult: meta=None content=[TextContent(type='text', text='Unknown tool: cl_no_existe', annotations=None, meta=None)] structured_",
+   "ms": 3
+  },
+  {
+   "id": "p03_falta_argumento",
+   "ok": false,
+   "detalle": "isError=None",
+   "ms": 2
+  },
+  {
+   "id": "p04_concurrencia_correlacion",
+   "ok": true,
+   "detalle": "0 respuestas cruzadas de 40",
+   "ms": 60
+  },
+  {
+   "id": "p05_arranque",
+   "ok": true,
+   "detalle": "arranques: 0.90s, 0.90s, 1.00s",
+   "ms": 2791
+  },
+  {
+   "id": "b01_fts_hostil",
+   "ok": true,
+   "detalle": "0/17 queries rompen: []",
+   "ms": 62
+  },
+  {
+   "id": "b02_vacia",
+   "ok": true,
+   "detalle": "0 vacias mal tratadas",
+   "ms": 14
+  },
+  {
+   "id": "b03_query_gigante",
+   "ok": false,
+   "detalle": "53999 chars en 44555 ms",
+   "ms": 44555
+  },
+  {
+   "id": "b04_unicode",
+   "ok": true,
+   "detalle": "0 fallos unicode: []",
+   "ms": 29
+  },
+  {
+   "id": "b05_determinismo",
+   "ok": true,
+   "detalle": "20 resultados, iguales=True",
+   "ms": 10
+  },
+  {
+   "id": "b06_limite",
+   "ok": true,
+   "detalle": "fallos: []",
+   "ms": 19
+  },
+  {
+   "id": "b07_campos",
+   "ok": true,
+   "detalle": "20 resultados, 0 incompletos",
+   "ms": 4
+  },
+  {
+   "id": "a01_articulo",
+   "ok": true,
+   "detalle": "cita=DL 825, art. 14, texto vigente desde 2006-04-28",
+   "ms": 3
+  },
+  {
+   "id": "a02_bis",
+   "ok": false,
+   "detalle": "None == None",
+   "ms": 6
+  },
+  {
+   "id": "a03_inexistente",
+   "ok": true,
+   "detalle": "[not_found] el articulo 99999 no existe en DL 825 (idNorma 6369, 1974-12-31); fuente: https://www.leychile.cl/N?i=6369",
+   "ms": 4
+  },
+  {
+   "id": "a04_norma_fuera",
+   "ok": true,
+   "detalle": "[not_found] norma 999999 no esta en el indice; corre la ingesta",
+   "ms": 2
+  },
+  {
+   "id": "a05_fecha_invalida",
+   "ok": false,
+   "detalle": "[('2020-13-45', 'sin error'), ('ayer', 'sin error'), ('2020-02-30', 'sin error'), ('0000-00-00', 'sin error')]",
+   "ms": 90211
+  },
+  {
+   "id": "a06_fecha_futura",
+   "ok": false,
+   "detalle": "",
+   "ms": 18724
+  },
+  {
+   "id": "a07_fecha_historica",
+   "ok": true,
+   "detalle": "confianza=media",
+   "ms": 16414
+  },
+  {
+   "id": "v01_versiones",
+   "ok": true,
+   "detalle": "83 versiones",
+   "ms": 3
+  },
+  {
+   "id": "v02_sin_historial",
+   "ok": true,
+   "detalle": "[not_found] sin historial para 999999; corre la ingesta",
+   "ms": 2
+  },
+  {
+   "id": "c01_lote_mixto",
+   "ok": true,
+   "detalle": "10/10 clasificadas",
+   "ms": 28
+  },
+  {
+   "id": "c02_string",
+   "ok": false,
+   "detalle": "string tratado como 0 referencias",
+   "ms": 2
+  },
+  {
+   "id": "c03_lote_grande",
+   "ok": true,
+   "detalle": "200/200 en 66 ms",
+   "ms": 66
+  },
+  {
+   "id": "n01_mayusculas",
+   "ok": true,
+   "detalle": "2 fichas",
+   "ms": 36
+  },
+  {
+   "id": "n02_inexistente",
+   "ok": true,
+   "detalle": "[not_found] sin ficha para esa consulta",
+   "ms": 35
+  },
+  {
+   "id": "n03_todas",
+   "ok": true,
+   "detalle": "27 fichas",
+   "ms": 37
+  },
+  {
+   "id": "d01_poder",
+   "ok": false,
+   "detalle": "KeyError: 'pdf'",
+   "ms": 18
+  },
+  {
+   "id": "d02_compraventa_base",
+   "ok": false,
+   "detalle": "base=null",
+   "ms": 2
+  },
+  {
+   "id": "d03_faltan_campos",
+   "ok": true,
+   "detalle": "{\"error\": \"[invalid_arg] faltan campos: OTORGANTE, DOMICILIO, MANDATARIO, RUT_MANDATARIO, FACULTADES, CIUDAD, FECHA\"}",
+   "ms": 2
+  },
+  {
+   "id": "d04_plantilla",
+   "ok": true,
+   "detalle": "{\"error\": \"[not_found] plantilla desconocida: ../../etc/passwd\"}",
+   "ms": 2
+  },
+  {
+   "id": "d05_md",
+   "ok": false,
+   "detalle": "533 chars, sustituye=False",
+   "ms": 17
+  },
+  {
+   "id": "d06_concurrencia",
+   "ok": false,
+   "detalle": "[('Otorgante NumeroA', 'contenido de otro'), ('Otorgante NumeroB', 'contenido de otro'), ('Otorgante NumeroC', 'contenido de otro')]",
+   "ms": 239
+  },
+  {
+   "id": "d07_xml_escapado",
+   "ok": true,
+   "detalle": "XML valido con &, < y comillas",
+   "ms": 27
+  },
+  {
+   "id": "d08_formato",
+   "ok": false,
+   "detalle": "{\"plantilla\": \"poder-especial\", \"archivos\": {\"odt\": \"/home/billibu/sede/trabajo/trabajos/T-103-mcp-leyes-chile/entrega/m",
+   "ms": 845
+  },
+  {
+   "id": "k01_cobertura",
+   "ok": true,
+   "detalle": "{'normas': 9, 'articulos': 6246, 'versiones': 556, 'ultima_ingesta': '2026-11-06T15:27:06'} vs {'normas': 9, 'articulos': 6246, 'versiones': 556, 'ultima_ingesta': '2026-11-06T15:27:06'}",
+   "ms": 45
+  },
+  {
+   "id": "k02_aviso",
+   "ok": true,
+   "detalle": "Esto no es asesoría legal. Verifica con un profesional antes de actuar.",
+   "ms": 19
+  },
+  {
+   "id": "l01_secuencial",
+   "ok": true,
+   "detalle": "100 llamadas, p50=5ms p95=40ms errores=0",
+   "ms": 1729
+  },
+  {
+   "id": "l02_concurrente",
+   "ok": true,
+   "detalle": "40 concurrentes en 7254ms, errores=0",
+   "ms": 7254
+  }
+ ]
+}

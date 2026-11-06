@@ -1,0 +1,95 @@
+{
+ "juzgadas": 6,
+ "con_puntaje": 6,
+ "promedio": 2.33,
+ "acuerdo": 5,
+ "juicios": [
+  {
+   "id": "derogado",
+   "latencia_s": 33.2,
+   "puntaje": 2,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "Para un artículo derogado, la cita dice 'texto vigente desde 1989-10-20' y el campo 'vigente_desde' es ambiguo: no se aclara si esa fecha corresponde a la derogación ni qué norma derogatoria la produjo (hueco de vigencia no declarado)",
+    "No declara que no entrega el texto histórico del artículo previo a su derogación; el campo 'hueco' es null pese a esa limitación",
+    "El aviso es un disclaimer genérico y no sustituye la declaración explícita de lo que la respuesta no cubre"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "documento",
+   "latencia_s": 92.5,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "La base legal es genérica (solo la definición de mandato, art. 2116) y no cita normas específicas del poder especial ni formalidades de enajenación de vehículos, aunque la nota lo reconoce parcialmente al dejar la calificación del acto al notario",
+    "El texto normativo citado aparece truncado ('mandat...')",
+    "El contenido de los archivos generados no es auditable desde el JSON (solo se entregan rutas locales)"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "duplicado",
+   "latencia_s": 43.4,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "Cumple el criterio maximo: cita norma y articulo concretos (Codigo de Comercio, art. 1), con fuente oficial (leychile.cl, idNorma 1974), fecha de vigencia (2004-03-23) y timestamp de verificacion",
+    "Declara explicitamente su limite: el campo 'hueco' informa que varios articulos comparten el numero y que solo devuelve el primero, y 'coincidencias: 3' cuantifica la ambiguedad (honestidad alta, no oculta la desambiguacion pendiente)",
+    "No enumera las otras 2 coincidencias ni sus ubicaciones, solo las cuenta; el usuario no puede distinguir las variantes sin otra consulta",
+    "El campo 'variante' es null pese a existir 3 coincidencias: no usa su propio mecanismo de desambiguacion, aunque lo disclosea",
+    "URL de fuente apunta a la norma completa sin ancla al articulo especifico (limitacion menor de trazabilidad)",
+    "Inconsistencia cosmica de capitalizacion en 'Codigo DE COMERCIO' (no afecta verificabilidad)"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "fuera-cobertura",
+   "latencia_s": 45.0,
+   "puntaje": 1,
+   "cita_verificable": false,
+   "honestidad": "alta",
+   "problemas": [
+    "total=0 y resultados vacíos: no entrega ninguna cita, sentencia ni contenido jurisprudencial verificable",
+    "no responde la pregunta de fondo sobre qué ha resuelto la Corte Suprema en materia de despido injustificado",
+    "punto a favor: el aviso declara explícitamente la falta de cobertura, advierte contra concluir inexistencia y sugiere verificar con cl_cobertura, sin fabricar resultados; sin embargo, la ausencia total de citas impide puntuar más alto según la rúbrica"
+   ],
+   "automatico_ok": true,
+   "acuerdo": false
+  },
+  {
+   "id": "historico-825",
+   "latencia_s": 130.6,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "menor: la norma se identifica solo por idNorma 6369 y no por su denominación 'DL 825' en el cuerpo de la respuesta, aunque la URL de LeyChile la hace resoluble",
+    "menor: el método 'recorte por cabecera sobre texto historico' implica posible imprecisión del texto citado, pero está declarado mediante 'confianza': 'media' y el campo 'hueco'",
+    "menor: 'sin_cambios': false sugiere que el artículo tuvo cambios previos que no se detallan (fecha de última modificación no informada)"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "inexistente",
+   "latencia_s": 80.8,
+   "puntaje": 2,
+   "cita_verificable": false,
+   "honestidad": "alta",
+   "problemas": [
+    "Identifica la norma solo por el ID interno 'norma 6369', sin nombre público (DL 825), fuente oficial ni fecha, por lo que la referencia no es verificable externamente.",
+    "No aporta el rango de artículos vigentes de la norma ni referencia a texto oficial que permita confirmar que el artículo 9999 está fuera de rango.",
+    "Punto a favor: no inventa contenido ni rellena el vacío; declara explícitamente la inexistencia del artículo, que es la respuesta correcta ante una consulta trampa. El déficit es de trazabilidad de fuente, no de honestidad."
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  }
+ ]
+}

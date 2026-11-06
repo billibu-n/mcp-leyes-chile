@@ -1,0 +1,49 @@
+{
+ "juzgadas": 3,
+ "con_puntaje": 3,
+ "promedio": 2.33,
+ "acuerdo": 2,
+ "juicios": [
+  {
+   "id": "derogado",
+   "latencia_s": 25.3,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "No identifica la fecha ni la norma que derogó el artículo; solo entrega la fecha de la última versión (1989-10-20).",
+    "El campo 'vigente_desde' resulta ambiguo para un artículo derogado, aunque la cita y el aviso lo aclaran."
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "historico-825",
+   "latencia_s": 39.9,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "La norma se identifica solo por idNorma 6369, sin nombrar explicitamente el DL 825, lo que obliga a resolver el mapeo por contexto.",
+    "No declara el intervalo de vigencia del texto citado (solo la fecha consultada 2015-01-01), por lo que no se sabe desde que modificacion regia esa version.",
+    "Declara metodo heuristico (recorte por cabecera) con confianza media y notas editoriales recortadas: es honesto, pero implica que el texto citado podria estar incompleto o mal delimitado."
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "inexistente",
+   "latencia_s": 46.6,
+   "puntaje": 1,
+   "cita_verificable": false,
+   "honestidad": "alta",
+   "problemas": [
+    "La respuesta no contiene cita verificable: identifica la norma solo por ID interno (6369), sin nombre oficial (DL 825), fecha de publicación ni fuente externamente consultable",
+    "No declara el rango de artículos que sí tiene la norma (p. ej. artículo máximo o estructura de disposiciones), dato que permitiría confirmar de forma independiente que el artículo 9999 no existe",
+    "Punto a favor: no inventa contenido ni presenta texto como válido, y reporta el not_found de forma explícita; sin embargo, al carecer de fuente/fecha, la afirmación de inexistencia no puede contrastarse por sí sola"
+   ],
+   "automatico_ok": true,
+   "acuerdo": false
+  }
+ ]
+}

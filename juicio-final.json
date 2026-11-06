@@ -1,0 +1,90 @@
+{
+ "juzgadas": 6,
+ "con_puntaje": 6,
+ "promedio": 2.67,
+ "acuerdo": 5,
+ "juicios": [
+  {
+   "id": "derogado",
+   "latencia_s": 112.9,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "Cita concreta (DL 825, art. 47) con fuente (leychile.cl, idNorma 6369) y fechas, y declara explícitamente su limitación principal: el artículo está derogado, no está vigente y no debe citarse como derecho aplicable",
+    "No inventa texto: devuelve el texto real de la versión actual ('DEROGADO') en lugar de fabricar el contenido histórico, lo cual es honesto pero puede no satisfacer si la consulta buscaba el texto previo a la derogación",
+    "El campo 'vigente_desde' (1989-10-20) es ambiguo para un artículo derogado; parece ser la fecha de última versión, aclarado solo indirectamente en el campo 'cita'",
+    "No identifica qué norma ni en qué fecha derogó el artículo 47"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "documento",
+   "latencia_s": 73.6,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "El texto legal citado está truncado a mitad de palabra ('mandat...'), aunque el fragmento entregado es consistente con el artículo alegado",
+    "La base legal corresponde solo al marco general del mandato (art. 2116) y no a las solemnidades específicas del poder para venta de vehículo; sin embargo, la nota lo declara explícitamente ('el acto concreto lo califica el notario'), por lo que el alcance se comunica con honestidad",
+    "Los archivos generados son rutas locales no verificables desde el JSON, pero no hay contradicción con la evidencia y la salida está claramente marcada como borrador no válido"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "duplicado",
+   "latencia_s": 40.5,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "La limitación por número repetido se declara solo en texto libre ('hueco'): no enumera las otras 2 coincidencias ni ofrece un campo 'variante' para recuperarlas, pese a que 'variante' viene null",
+    "La fuente (leychile N?i=1974) apunta a la norma completa, no al artículo específico, por lo que la verificación puntual exige búsqueda manual",
+    "'vigente_desde' (2004-03-23) no se justifica: no se indica qué reforma fija esa fecha para el art. 1, aunque al menos la vigencia sí está declarada"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "fuera-cobertura",
+   "latencia_s": 30.2,
+   "puntaje": 1,
+   "cita_verificable": false,
+   "honestidad": "alta",
+   "problemas": [
+    "No entrega ninguna cita, norma, fuente ni fecha: total 0 resultados y arreglo vacío, el usuario no obtiene respuesta sustantiva a la pregunta.",
+    "Evade la pregunta, pero declara el motivo (tema posiblemente fuera de cobertura del corpus local), lo que la hace honesta y descarta el puntaje 0 por invención.",
+    "El aviso recomienda ejecutar cl_cobertura para confirmar la falta de cobertura, pero no lo hace ni entrega esa verificación, dejando el diagnóstico incompleto.",
+    "No declara qué sí podría cubrir el corpus sobre la materia (por ejemplo legislación laboral aplicable), perdiendo la oportunidad de una respuesta parcial verificable."
+   ],
+   "automatico_ok": true,
+   "acuerdo": false
+  },
+  {
+   "id": "historico-825",
+   "latencia_s": 89.2,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "La norma se identifica solo por idNorma 6369 y el enlace, sin nombrar 'DL 825' dentro de la respuesta, aunque es resoluble vía fuente",
+    "El texto entregado es breve y con 'confianza media'; declara el recorte de notas editoriales ('hueco') pero no explicita si es transcripción literal e íntegra del artículo",
+    "La bandera 'sin_cambios': false no viene explicada, dejando ambiguo si refiere a cambios en o alrededor de la fecha consultada"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "inexistente",
+   "latencia_s": 25.4,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [],
+   "automatico_ok": true,
+   "acuerdo": true
+  }
+ ]
+}

@@ -1,5 +1,6 @@
 import json
 import zipfile
+from pathlib import Path
 
 import pytest
 
@@ -235,3 +236,64 @@ def test_articulo_de_texto_recorta_notas_editoriales():
     assert r["notas_recortadas"] is True
     assert "D.O." not in r["texto"]
     assert r["confianza"] == "media"
+
+
+def test_cita_derogada_no_dice_vigente():
+    meta = {"id_norma": 1, "tipo": "Ley", "numero": "1000"}
+    parte = {"nombre": "47", "texto": "x", "fecha_version": "1989-10-20",
+             "derogado": "derogado", "transitorio": ""}
+    c = citas.construir(meta, parte)
+    assert "vigente desde" not in c["cita"]
+    assert "derogado" in c["cita"] and c["hueco"]
+
+
+# --- regresiones del estres 0.2.2 (T-106) ---------------------------------
+
+def test_fecha_valida_rechaza_basura():
+    assert bcn.fecha_valida("2015-01-01") is None
+    assert "AAAA-MM-DD" in bcn.fecha_valida("2020-13-45")
+    assert "AAAA-MM-DD" in bcn.fecha_valida("ayer")
+    assert "centinela" in bcn.fecha_valida("2222-02-02")
+    assert "futuro" in bcn.fecha_valida("2999-01-01")
+    assert "1900" in bcn.fecha_valida("1850-01-01")
+
+
+def test_buscar_recorta_consulta_gigante(tmp_path):
+    con = _db_falsa(tmp_path)
+    tokens, recortado = db.recortar("contribuyentes " * 6000)
+    assert recortado and len(tokens.split()) == db.MAX_TOKENS
+    assert db.buscar(con, "contribuyentes " * 6000)
+
+
+def test_clave_articulo_acepta_formas():
+    assert db._clave_articulo("art. 1545") == "1545"
+    assert db._clave_articulo("Artículo 1545") == "1545"
+    assert db._clave_articulo("11 BIS (DEL ART. 7)") == "11bis"
+
+
+def test_documento_md_sustituye(tmp_path, monkeypatch):
+    monkeypatch.setattr(documentos, "SALIDAS", tmp_path)
+    p = documentos.plantillas()["poder-especial"]
+    datos = {c["nombre"]: f"valor-{c['nombre']}" for c in p["campos"]}
+    r = documentos.generar("poder-especial", datos, ("odt", "md"))
+    texto = Path(r["archivos"]["md"]).read_text(encoding="utf-8")
+    assert "valor-OTORGANTE" in texto
+    assert "{OTORGANTE}" not in texto
+
+
+def test_documento_formato_invalido(tmp_path, monkeypatch):
+    monkeypatch.setattr(documentos, "SALIDAS", tmp_path)
+    p = documentos.plantillas()["poder-especial"]
+    datos = {c["nombre"]: "X" for c in p["campos"]}
+    with pytest.raises(documentos.DocumentoError) as exc:
+        documentos.generar("poder-especial", datos, ("odt", "exe"))
+    assert "[invalid_arg]" in str(exc.value)
+
+
+def test_documento_dos_llamadas_no_se_pisan(tmp_path, monkeypatch):
+    monkeypatch.setattr(documentos, "SALIDAS", tmp_path)
+    p = documentos.plantillas()["poder-especial"]
+    datos = {c["nombre"]: "X" for c in p["campos"]}
+    a = documentos.generar("poder-especial", datos, ("odt",))
+    b = documentos.generar("poder-especial", datos, ("odt",))
+    assert a["archivos"]["odt"] != b["archivos"]["odt"]

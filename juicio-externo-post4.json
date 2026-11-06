@@ -1,0 +1,18 @@
+{
+ "juzgadas": 1,
+ "con_puntaje": 1,
+ "promedio": 3.0,
+ "acuerdo": 1,
+ "juicios": [
+  {
+   "id": "inexistente",
+   "latencia_s": 34.1,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [],
+   "automatico_ok": true,
+   "acuerdo": true
+  }
+ ]
+}

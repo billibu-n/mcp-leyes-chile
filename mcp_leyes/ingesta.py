@@ -8,7 +8,7 @@ from datetime import datetime
 from . import bcn, db
 
 # Cuerpos nucleares; ampliable sin tocar codigo.
-NORMAS = [6369, 207436, 172986, 1974, 1984, 242302, 141599, 127917]
+NORMAS = [6369, 207436, 172986, 1974, 1984, 242302, 141599, 127917, 61438]
 
 
 def una(con, id_norma: int, forzar: bool = False) -> str:

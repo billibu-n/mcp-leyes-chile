@@ -1,0 +1,68 @@
+{
+  "id": "poder-especial",
+  "titulo": "PODER ESPECIAL",
+  "campos": [
+    {
+      "nombre": "OTORGANTE",
+      "etiqueta": "Nombre completo del poderdante",
+      "requerido": true
+    },
+    {
+      "nombre": "RUT",
+      "etiqueta": "RUT del poderdante",
+      "requerido": true
+    },
+    {
+      "nombre": "DOMICILIO",
+      "etiqueta": "Domicilio del poderdante",
+      "requerido": true
+    },
+    {
+      "nombre": "MANDATARIO",
+      "etiqueta": "Nombre completo del mandatario",
+      "requerido": true
+    },
+    {
+      "nombre": "RUT_MANDATARIO",
+      "etiqueta": "RUT del mandatario",
+      "requerido": true
+    },
+    {
+      "nombre": "FACULTADES",
+      "etiqueta": "Facultades que se confieren",
+      "requerido": true
+    },
+    {
+      "nombre": "CIUDAD",
+      "etiqueta": "Ciudad de otorgamiento",
+      "requerido": true
+    },
+    {
+      "nombre": "FECHA",
+      "etiqueta": "Fecha de otorgamiento (AAAA-MM-DD)",
+      "requerido": true
+    }
+  ],
+  "parrafos": [
+    "En {{CIUDAD}}, a {{FECHA}}, comparece don(ña) {{OTORGANTE}}, cédula nacional de identidad número {{RUT}}, domiciliado(a) en {{DOMICILIO}}, quien en su calidad de poderdante confiere poder especial al señor(a) {{MANDATARIO}}, cédula nacional de identidad número {{RUT_MANDATARIO}}.",
+    "El presente poder se confiere exclusivamente para: {{FACULTADES}}.",
+    "El mandatario deberá rendir cuenta de su gestión y no podrá delegar el mandato sin autorización expresa del poderdante.",
+    "En comprobante y previa aceptación, firman los comparecientes."
+  ],
+  "cierre": [
+    "_______________________________",
+    "{{OTORGANTE}} — RUT {{RUT}}",
+    "Poderdante",
+    "",
+    "_______________________________",
+    "{{MANDATARIO}} — RUT {{RUT_MANDATARIO}}",
+    "Mandatario"
+  ],
+  "base_legal": [
+    {
+      "id_norma": 172986,
+      "articulo": "2116",
+      "nota": "el poder especial es un mandato: el mandatario obra por cuenta y riesgo del mandante"
+    }
+  ]
+}

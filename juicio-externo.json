@@ -1,0 +1,99 @@
+{
+ "juzgadas": 6,
+ "con_puntaje": 6,
+ "promedio": 1.83,
+ "acuerdo": 4,
+ "juicios": [
+  {
+   "id": "derogado",
+   "latencia_s": 76.2,
+   "puntaje": 2,
+   "cita_verificable": true,
+   "honestidad": "media",
+   "problemas": [
+    "La URL de fuente está malformada ('https://www.leychile.cl/N?i=None', con 'None' literal), por lo que el enlace entregado no es funcional y no sirve para verificar.",
+    "Inconsistencia interna de vigencia: estado 'derogado' pero la cita dice 'texto vigente desde 1989-10-20'; nunca se aclara si esa fecha es la de la derogación y el campo hueco es null pese a existir ambigüedad.",
+    "No declara la limitación principal: la pregunta pide el texto de un artículo derogado y la respuesta solo entrega la nota 'DEROGADO', sin aclarar que no incluye el texto histórico previo a la derogación.",
+    "idNorma en null reduce la trazabilidad de la norma citada.",
+    "La cita en sí (DL 825, art. 47) es comprobable de forma independiente en LeyChile, lo que impide un puntaje menor, pero los huecos de fuente y de declaración de cobertura impiden el 3."
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "documento",
+   "latencia_s": 20.1,
+   "puntaje": 1,
+   "cita_verificable": false,
+   "honestidad": "media",
+   "problemas": [
+    "No cita ninguna norma ni articulo concreto (no menciona, por ejemplo, el mandato en el Codigo Civil ni requisitos legales aplicables a un poder especial para venta de vehiculo)",
+    "No declara fuente, fecha ni vigencia de la plantilla utilizada",
+    "No especifica que elementos legales o clausulas no cubre el documento, mas alla del aviso generico de borrador",
+    "Las rutas de archivos son locales al servidor y no permiten verificacion del contenido por parte del cliente",
+    "Punto a favor: el aviso BORRADOR - NO VALIDO PARA PRESENTACION evita presentar el borrador como valido, lo que descarta el puntaje 0"
+   ],
+   "automatico_ok": true,
+   "acuerdo": false
+  },
+  {
+   "id": "duplicado",
+   "latencia_s": 77.6,
+   "puntaje": 2,
+   "cita_verificable": true,
+   "honestidad": "media",
+   "problemas": [
+    "La fuente entregada es una URL malformada e inutilizable (https://www.leychile.cl/N?i=None): el hueco de fuente no se declara en el campo hueco, que solo cubre el tema de números repetidos",
+    "idNorma es null y no se cita el instrumento de refundición (tipo DFL/orden) que fijó el texto, aunque la pregunta versa precisamente sobre una norma refundida",
+    "Declara coincidencias=3 pero no enumera las otras coincidencias ni su ubicación (libro/título), lo que impide verificar el manejo del número repetido más allá de la palabra del servidor",
+    "La fecha de vigencia (2004-03-23) se afirma en la cita sin fuente operativa que la respalde, dado que el enlace de fuente está roto",
+    "Detalles menores: capitalización inconsistente (Código DE COMERCIO) y el timestamp verificado=2026-11-06 no es reproducible por el usuario al no funcionar la fuente"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "fuera-cobertura",
+   "latencia_s": 69.1,
+   "puntaje": 1,
+   "cita_verificable": false,
+   "honestidad": "media",
+   "problemas": [
+    "No responde la pregunta: la búsqueda de 'SERNAC' devuelve total 0 y ningún resultado ni texto",
+    "Sin cita de norma ni artículo, nada es verificable",
+    "Evita la pregunta sin declarar por qué no puede responderla ni qué queda sin cubrir",
+    "No fabrica datos y el JSON es transparente sobre la búsqueda vacía, pero no hay declaración explícita de la falla ni evidencia de reintentos con términos alternativos"
+   ],
+   "automatico_ok": true,
+   "acuerdo": false
+  },
+  {
+   "id": "historico-825",
+   "latencia_s": 90.2,
+   "puntaje": 3,
+   "cita_verificable": true,
+   "honestidad": "alta",
+   "problemas": [
+    "El campo 'sin_cambios': false no se explica: no se indica qué cambios existen ni en qué fechas, lo que resta contexto.",
+    "El 'hueco' declarado cubre solo el recorte de notas editoriales; el método 'recorte por cabecera sobre texto historico' con 'confianza': 'media' implica posible imprecisión o incompletitud del cuerpo citado que no queda delimitada explícitamente.",
+    "La cita es verificable (idNorma 6369, artículo 14, URL de LeyChile con fecha fija f=2015-01-01 que coincide con 'vigente_al'), pero el contenido del texto no puede confirmarse sin acceder a la fuente."
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  },
+  {
+   "id": "inexistente",
+   "latencia_s": 66.7,
+   "puntaje": 2,
+   "cita_verificable": false,
+   "honestidad": "alta",
+   "problemas": [
+    "La respuesta es un aviso not_found, no una cita de contenido: no aporta fuente ni fecha que respalde la afirmación de que el artículo no existe",
+    "Usa el identificador interno 'norma 6369' sin nombre oficial ni fuente verificable externamente que confirme que corresponde al DL 825",
+    "No declara el rango de artículos vigentes ni otros datos que permitan confirmar la inexistencia del artículo 9999; no obstante, no inventa contenido ni presenta borradores, y declara explícitamente su no cobertura ante la premisa falsa de la pregunta"
+   ],
+   "automatico_ok": true,
+   "acuerdo": true
+  }
+ ]
+}

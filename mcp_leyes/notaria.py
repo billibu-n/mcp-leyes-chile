@@ -8,7 +8,7 @@ import yaml
 
 from . import db as db_mod
 
-DIR = Path(__file__).resolve().parent.parent / "notaria"
+DIR = Path(__file__).resolve().parent / "notaria"
 ESTADOS = {"verificado", "parcial", "sin_fuente"}
 
 
