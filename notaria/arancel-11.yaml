@@ -1,0 +1,25 @@
+id: arancel-11
+tramite: Compraventa de cosas muebles, $2.500.-, más el uno por mil sobre el monto
+  de acto contrato…
+para_que: Acto notarial con derecho maximo fijado por el arancel.
+requisitos: []
+documentos: []
+arancel:
+  norma: Decreto 587 Exento, 1998 (idNorma 127917)
+  numeral: '11'
+  texto_nominal: "Compraventa de cosas muebles, $2.500.-, más el uno\npor mil sobre\
+    \ el monto de acto contrato, cualquiera sea el\nnúmero de ejemplares, no pudiendo\
+    \ exceder este derecho de\n$10.000.-\n\n     El recargo aplicable a la compraventa\
+    \ de automóviles\nse determinará considerando la tasación efectuada por el\nServicio\
+    \ de Impuestos Internos para la liquidación del\nimpuesto a la compraventa."
+  advertencia: 'Monto nominal de 1998. NO es el precio actual: el decreto no trae
+    clausula de reajuste en su texto. Confirmar en la notaria.'
+competencia:
+  regla: null
+  estado: sin_fuente
+fuente:
+- url: https://www.leychile.cl/N?i=127917
+  consultado: '2026-11-06'
+  que: Arancel, numeral 11
+revisado: '2026-11-06'
+estado: parcial

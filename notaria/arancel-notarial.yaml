@@ -1,0 +1,20 @@
+id: arancel-notarial
+tramite: Consulta de arancel notarial
+para_que: "Saber cual es la norma que fija los derechos maximos de los notarios."
+requisitos: []
+documentos: []
+arancel:
+  norma: "Decreto 587 Exento, 1998 (idNorma 127917)"
+  numeral: "1 a 24"
+  texto_nominal: "El articulo 1 fija los derechos maximos en 34 numerales; el Decreto 201 Exento de 2020 (idNorma 1142086) agrega el numeral 24."
+  advertencia: "El decreto es de 1998 y su texto no trae reajuste. Cualquier calculo de precio actual exige verificar la practica y la reforma en tramite."
+competencia:
+  regla: null
+  estado: sin_fuente
+fuente:
+  - url: "https://www.leychile.cl/N?i=127917"
+    consultado: "2026-11-06"
+  - url: "https://www.leychile.cl/N?i=1142086"
+    consultado: "2026-11-06"
+revisado: "2026-11-06"
+estado: verificado

@@ -1,0 +1,28 @@
+id: arancel-05
+tramite: 'Por la autorización de firma de instrumentos que tienen apreciación pecuniaria:
+  Hasta $ 50…'
+para_que: Acto notarial con derecho maximo fijado por el arancel.
+requisitos: []
+documentos: []
+arancel:
+  norma: Decreto 587 Exento, 1998 (idNorma 127917)
+  numeral: '5'
+  texto_nominal: "Por la autorización de firma de instrumentos que\ntienen apreciación\
+    \ pecuniaria:\n\n\nHasta  $ 50.000.-                     = $  500.-\nMás de $\
+    \ 50.000.- y hasta $150.000    = $1.000.-\nMás de $150.000.- y hasta $200.000\
+    \    = $1.500.-\nMás de $200.000.- y hasta $500.000    = $2.000.-\nSobre  $500.000.-\
+    \                     = $3.000.-\n\n     Los valores indicados se aplicarán cualquiera\
+    \ sea el\nnúmero de firmas que contenga el documento.\n\n     En caso que el acto\
+    \ o contrato cuya firma se autorice\nno fuere susceptible de apreciación pecuniaria,\
+    \ el valor\nserá de $800.-, cualquiera sea el número de firmas qu"
+  advertencia: 'Monto nominal de 1998. NO es el precio actual: el decreto no trae
+    clausula de reajuste en su texto. Confirmar en la notaria.'
+competencia:
+  regla: null
+  estado: sin_fuente
+fuente:
+- url: https://www.leychile.cl/N?i=127917
+  consultado: '2026-11-06'
+  que: Arancel, numeral 5
+revisado: '2026-11-06'
+estado: parcial

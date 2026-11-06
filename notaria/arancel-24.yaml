@@ -1,0 +1,35 @@
+id: arancel-24
+tramite: En el caso de escrituras públicas de constitución de hipotecas y otros gravámenes
+  cuyo obj…
+para_que: Acto notarial con derecho maximo fijado por el arancel.
+requisitos: []
+documentos: []
+arancel:
+  norma: Decreto 587 Exento, 1998 (idNorma 127917)
+  numeral: '24'
+  texto_nominal: 'En el caso de escrituras públicas de constitución
+
+    de hipotecas y otros gravámenes cuyo objeto sea garantizar
+
+    el pago de un crédito hipotecario destinado al
+
+    refinanciamiento de uno o más créditos de esta clase que
+
+    existan con anterioridad, los notarios del país podrán
+
+    cobrar, como máximo, en el ejercicio de los actos de su
+
+    ministerio, sólo el 50% del arancel de escrituras públicas
+
+    señalado en el numeral'
+  advertencia: 'Monto nominal de 1998. NO es el precio actual: el decreto no trae
+    clausula de reajuste en su texto. Confirmar en la notaria.'
+competencia:
+  regla: null
+  estado: sin_fuente
+fuente:
+- url: https://www.leychile.cl/N?i=127917
+  consultado: '2026-11-06'
+  que: Arancel, numeral 24
+revisado: '2026-11-06'
+estado: parcial

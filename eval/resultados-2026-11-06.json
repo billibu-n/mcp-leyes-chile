@@ -1,0 +1,276 @@
+{
+ "tareas": 66,
+ "articulos": 60,
+ "exactitud": 1.0,
+ "alucinaciones": 0,
+ "adversariales_fallidas": 0,
+ "p95_ms": 12.6,
+ "p50_ms": 5.4,
+ "detalles": [
+  {
+   "id": "art-000",
+   "ok": true
+  },
+  {
+   "id": "art-001",
+   "ok": true
+  },
+  {
+   "id": "art-002",
+   "ok": true
+  },
+  {
+   "id": "art-003",
+   "ok": true
+  },
+  {
+   "id": "art-004",
+   "ok": true
+  },
+  {
+   "id": "art-005",
+   "ok": true
+  },
+  {
+   "id": "art-006",
+   "ok": true
+  },
+  {
+   "id": "art-007",
+   "ok": true
+  },
+  {
+   "id": "art-008",
+   "ok": true
+  },
+  {
+   "id": "art-009",
+   "ok": true
+  },
+  {
+   "id": "art-010",
+   "ok": true
+  },
+  {
+   "id": "art-011",
+   "ok": true
+  },
+  {
+   "id": "art-012",
+   "ok": true
+  },
+  {
+   "id": "art-013",
+   "ok": true
+  },
+  {
+   "id": "art-014",
+   "ok": true
+  },
+  {
+   "id": "art-015",
+   "ok": true
+  },
+  {
+   "id": "art-016",
+   "ok": true
+  },
+  {
+   "id": "art-017",
+   "ok": true
+  },
+  {
+   "id": "art-018",
+   "ok": true
+  },
+  {
+   "id": "art-019",
+   "ok": true
+  },
+  {
+   "id": "art-020",
+   "ok": true
+  },
+  {
+   "id": "art-021",
+   "ok": true
+  },
+  {
+   "id": "art-022",
+   "ok": true
+  },
+  {
+   "id": "art-023",
+   "ok": true
+  },
+  {
+   "id": "art-024",
+   "ok": true
+  },
+  {
+   "id": "art-025",
+   "ok": true
+  },
+  {
+   "id": "art-026",
+   "ok": true
+  },
+  {
+   "id": "art-027",
+   "ok": true
+  },
+  {
+   "id": "art-028",
+   "ok": true
+  },
+  {
+   "id": "art-029",
+   "ok": true
+  },
+  {
+   "id": "art-030",
+   "ok": true
+  },
+  {
+   "id": "art-031",
+   "ok": true
+  },
+  {
+   "id": "art-032",
+   "ok": true
+  },
+  {
+   "id": "art-033",
+   "ok": true
+  },
+  {
+   "id": "art-034",
+   "ok": true
+  },
+  {
+   "id": "art-035",
+   "ok": true
+  },
+  {
+   "id": "art-036",
+   "ok": true
+  },
+  {
+   "id": "art-037",
+   "ok": true
+  },
+  {
+   "id": "art-038",
+   "ok": true
+  },
+  {
+   "id": "art-039",
+   "ok": true
+  },
+  {
+   "id": "art-040",
+   "ok": true
+  },
+  {
+   "id": "art-041",
+   "ok": true
+  },
+  {
+   "id": "art-042",
+   "ok": true
+  },
+  {
+   "id": "art-043",
+   "ok": true
+  },
+  {
+   "id": "art-044",
+   "ok": true
+  },
+  {
+   "id": "art-045",
+   "ok": true
+  },
+  {
+   "id": "art-046",
+   "ok": true
+  },
+  {
+   "id": "art-047",
+   "ok": true
+  },
+  {
+   "id": "art-048",
+   "ok": true
+  },
+  {
+   "id": "art-049",
+   "ok": true
+  },
+  {
+   "id": "art-050",
+   "ok": true
+  },
+  {
+   "id": "art-051",
+   "ok": true
+  },
+  {
+   "id": "art-052",
+   "ok": true
+  },
+  {
+   "id": "art-053",
+   "ok": true
+  },
+  {
+   "id": "art-054",
+   "ok": true
+  },
+  {
+   "id": "art-055",
+   "ok": true
+  },
+  {
+   "id": "art-056",
+   "ok": true
+  },
+  {
+   "id": "art-057",
+   "ok": true
+  },
+  {
+   "id": "art-058",
+   "ok": true
+  },
+  {
+   "id": "art-059",
+   "ok": true
+  },
+  {
+   "id": "adv-inexistente",
+   "ok": true
+  },
+  {
+   "id": "adv-norma",
+   "ok": true
+  },
+  {
+   "id": "adv-centinela",
+   "ok": true
+  },
+  {
+   "id": "adv-derogado",
+   "ok": true
+  },
+  {
+   "id": "adv-vacia",
+   "ok": true
+  },
+  {
+   "id": "adv-inyeccion",
+   "ok": true
+  }
+ ],
+ "ok": true
+}

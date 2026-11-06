@@ -1,0 +1,23 @@
+id: arancel-16
+tramite: 'Instrucci�nes: por cada instrucción en el Libro respectivo, el arancel será
+  convencional.'
+para_que: Acto notarial con derecho maximo fijado por el arancel.
+requisitos: []
+documentos: []
+arancel:
+  norma: Decreto 587 Exento, 1998 (idNorma 127917)
+  numeral: '16'
+  texto_nominal: 'Instrucci�nes: por cada instrucción en el Libro
+
+    respectivo, el arancel será convencional.'
+  advertencia: 'Monto nominal de 1998. NO es el precio actual: el decreto no trae
+    clausula de reajuste en su texto. Confirmar en la notaria.'
+competencia:
+  regla: null
+  estado: sin_fuente
+fuente:
+- url: https://www.leychile.cl/N?i=127917
+  consultado: '2026-11-06'
+  que: Arancel, numeral 16
+revisado: '2026-11-06'
+estado: parcial

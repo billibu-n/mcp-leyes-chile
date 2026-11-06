@@ -1,0 +1,27 @@
+id: compraventa
+tramite: Compraventa de inmueble
+para_que: "Transferir el dominio de un bien raiz; suele requerir escritura publica e inscripcion."
+requisitos:
+  - texto: "Titulo de dominio vigente del vendedor"
+    estado: sin_fuente
+  - texto: "Certificado de hipotecas y gravamenes"
+    estado: sin_fuente
+  - texto: "Cedulas de identidad de ambas partes"
+    estado: sin_fuente
+documentos:
+  - texto: "Minuta o borrador de la compraventa (plantilla compraventa)"
+    estado: verificado
+arancel:
+  norma: "Decreto 587 Exento, 1998 (idNorma 127917)"
+  numeral: "1 y siguientes"
+  texto_nominal: "Derechos maximos por escritura publica y recargo de un por mil sobre el monto, con tope de $128.000.000 (valores de 1998)."
+  advertencia: "Valores nominales de 1998; no usar como precio final. Verificar en la notaria."
+competencia:
+  regla: null
+  estado: sin_fuente
+fuente:
+  - url: "https://www.leychile.cl/N?i=127917"
+    consultado: "2026-11-06"
+    que: "Arancel y recargo por escritura publica"
+revisado: "2026-11-06"
+estado: parcial

@@ -1,0 +1,28 @@
+id: arancel-01
+tramite: Por el otorgamiento de toda escritura pública de la cual no se haga mención
+  especial en es…
+para_que: Acto notarial con derecho maximo fijado por el arancel.
+requisitos: []
+documentos: []
+arancel:
+  norma: Decreto 587 Exento, 1998 (idNorma 127917)
+  numeral: '1'
+  texto_nominal: "Por el otorgamiento de toda escritura pública de la\ncual no se\
+    \ haga mención especial en este decreto, $2.500.-\n\n     Además, como recargo\
+    \ sobre el derecho establecido en\nel inciso anterior podrán cobrar un uno por\
+    \ mil calculado\nsobre el monto del acto o contrato fijándose en\n$128.000.000.-\
+    \ el límite de aplicación del referido\nrecargo. Sin embargo, éste no procederá\
+    \ respecto de las\nescrituras de promesa de celebrar un acto o contrato ni de\n\
+    las de cancelación, ni las de modificación de contratos,\nsalvo que estas modificaciones\
+    \ importen aumento de su\ncuantía en cuyo caso se aplicará sobre la dife"
+  advertencia: 'Monto nominal de 1998. NO es el precio actual: el decreto no trae
+    clausula de reajuste en su texto. Confirmar en la notaria.'
+competencia:
+  regla: null
+  estado: sin_fuente
+fuente:
+- url: https://www.leychile.cl/N?i=127917
+  consultado: '2026-11-06'
+  que: Arancel, numeral 1
+revisado: '2026-11-06'
+estado: parcial
