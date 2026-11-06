@@ -149,3 +149,40 @@ resultados: 1  |  io.github.billibu-n/mcp-leyes-chile 0.2.0
 ```
 
 Publicado: PyPI y registro oficial del Model Context Protocol.
+
+## 9. Publicación de 0.2.4 (2026-11-06)
+
+La 0.2.3 y la 0.2.4 se publicaron juntas: la primera era corrección interna, la segunda
+expone el parámetro `cuerpo`. Artefactos:
+
+```
+$ python -m pytest -q
+34 passed
+$ python -m mcp_leyes --selftest
+{"version": "0.2.4", "tools": [7]}
+
+$ twine check dist/*          -> PASSED
+$ twine upload dist/*         -> https://pypi.org/project/mcp-leyes-chile/0.2.4/
+$ mcp-publisher validate      -> ✅ server.json is valid
+$ mcp-publisher publish       -> ✓ version 0.2.4
+$ curl ".../servers?search=io.github.billibu-n/mcp-leyes-chile"
+  0.2.0 | 0.2.2 | 0.2.4
+```
+
+GitHub: `main` en el commit del release, tag `v0.2.4` y release con tres adjuntos
+(`.whl`, `.tar.gz`, `leyes-chile-skill.zip`).
+
+Prueba de la función nueva, desde el wheel instalado en un venv limpio, por stdio:
+
+```
+cl_articulo(172986, "31", cuerpo="")           -> Código Civil, "Parentesco por afinidad…"
+cl_articulo(172986, "31", cuerpo="Ley 4.808")  -> Ley 4.808, "Las partidas de nacimiento…"
+cl_articulo(172986, "31", cuerpo="Ley 14.908") -> Ley 14.908, "Las pensiones alimenticias…"
+```
+
+Ingesta desde cero en ese mismo venv: 9 normas, 6.246 artículos, 556 versiones.
+El ZIP de la skill descargado del release responde `normas` y `articulo`; `sha256`
+`61f6eec4…d8d2df6`, igual al subido a Agensi.
+
+La skill no viaja en el wheel: va en `skill/` del repositorio y en el `.tar.gz`. El corpus
+(`data/corpus.jsonl`, 6.852 textos) no se versiona; se regenera con `exportar-corpus.py`.
