@@ -50,16 +50,19 @@ def construir(meta: dict, parte: dict) -> dict:
     if parte.get("transitorio") == "transitorio":
         estado = "transitorio"
     if estado == "derogado":
-        cita = f"{nombre_norma(meta)}, art. {numero} (derogado"
+        etiqueta = parte.get("cuerpo_corto") or nombre_norma(meta)
+        cita = f"{etiqueta}, art. {numero} (derogado"
         cita += f", última versión {desde})" if desde else ")"
         hueco = "articulo derogado: no esta vigente; no debe citarse como derecho aplicable"
     else:
-        cita = f"{nombre_norma(meta)}, art. {numero}"
+        etiqueta = parte.get("cuerpo_corto") or nombre_norma(meta)
+        cita = f"{etiqueta}, art. {numero}"
         if desde:
             cita += f", texto vigente desde {desde}"
     return {
         "idNorma": meta.get("id_norma"),
-        "norma": nombre_norma(meta),
+        "norma": etiqueta,
+        "cuerpo": parte.get("cuerpo") or None,
         "articulo": numero,
         "variante": variante,
         "texto": texto,

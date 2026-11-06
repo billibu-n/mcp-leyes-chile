@@ -4,3 +4,5 @@ include CHANGELOG.md
 include server.json
 recursive-include mcp_leyes/notaria *.yaml
 recursive-include mcp_leyes/plantillas *.json
+include exportar-corpus.py
+recursive-include skill *.md *.py

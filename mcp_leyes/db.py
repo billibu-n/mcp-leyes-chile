@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS parte (
   id_norma INTEGER NOT NULL REFERENCES norma(id),
   orden INTEGER, id_parte TEXT, tipo TEXT, clase TEXT,
   nombre TEXT, titulo TEXT, texto TEXT,
-  derogado TEXT, transitorio TEXT, fecha_version TEXT
+  derogado TEXT, transitorio TEXT, fecha_version TEXT,
+  cuerpo TEXT, cuerpo_corto TEXT
 );
 CREATE TABLE IF NOT EXISTS version (
   id_norma INTEGER NOT NULL, vigente_desde TEXT, vigente_hasta TEXT,
@@ -36,6 +37,10 @@ def conectar(ruta: str | Path) -> sqlite3.Connection:
     con = sqlite3.connect(str(ruta))
     con.row_factory = sqlite3.Row
     con.executescript(ESQUEMA)
+    columnas = {f[1] for f in con.execute("PRAGMA table_info(parte)")}
+    for col in ("cuerpo", "cuerpo_corto"):
+        if col not in columnas:
+            con.execute(f"ALTER TABLE parte ADD COLUMN {col} TEXT")
     return con
 
 
@@ -56,10 +61,12 @@ def guardar(con, meta: dict, partes: list[dict], sha: str, descargado: str) -> N
     )
     con.executemany(
         "INSERT INTO parte (id_norma, orden, id_parte, tipo, clase, nombre, titulo,"
-        " texto, derogado, transitorio, fecha_version) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+        " texto, derogado, transitorio, fecha_version, cuerpo, cuerpo_corto)"
+        " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [(meta["id_norma"], p["orden"], p["id_parte"], p["tipo"], p["clase"],
           p["nombre"], p["titulo"], p["texto"], p["derogado"], p["transitorio"],
-          p["fecha_version"]) for p in partes],
+          p["fecha_version"], p.get("cuerpo", ""), p.get("cuerpo_corto", ""))
+         for p in partes],
     )
     con.execute("INSERT INTO parte_fts(parte_fts) VALUES('rebuild')")
 
@@ -98,6 +105,7 @@ def buscar(con, q: str, limite: int = 10, solo_vigentes: bool = True) -> list[di
     consulta = " ".join(f'"{t}"*' for t in tokens.split())
     sql = """
       SELECT p.id_norma, p.nombre, p.titulo, p.clase, p.derogado, p.fecha_version,
+             p.cuerpo, p.cuerpo_corto,
              n.tipo, n.numero, n.titulo AS titulo_norma,
              snippet(parte_fts, 2, '>>>', '<<<', '…', 18) AS fragmento
       FROM parte_fts JOIN parte p ON p.id = parte_fts.rowid

@@ -185,6 +185,26 @@ def test_server_articulo_ambiguo(tmp_path, monkeypatch):
     assert r["coincidencias"] == 2 and "comparten el numero" in r["hueco"]
 
 
+def test_server_articulo_por_cuerpo(tmp_path, monkeypatch):
+    from mcp_leyes import server
+    con = db.conectar(tmp_path / "c.db")
+    meta = {"id_norma": 1, "tipo": "Ley", "numero": "1", "titulo": "X", "organismo": "",
+            "fecha_publicacion": "", "fecha_promulgacion": "", "fecha_version": "",
+            "derogado": "no derogado"}
+    base = {"orden": 1, "id_parte": "1", "tipo": "Artículo", "clase": "articulo",
+            "nombre": "31", "titulo": "", "texto": "texto", "derogado": "",
+            "transitorio": "", "fecha_version": "2020-01-01"}
+    partes = [dict(base, cuerpo="ARTICULO 2 (CODIGO CIVIL)", cuerpo_corto="Código Civil"),
+              dict(base, orden=2, id_parte="2", cuerpo="7 (LEY SOBRE ABANDONO DE FAMILIA)",
+                   cuerpo_corto="Ley 14.908")]
+    db.guardar(con, meta, partes, "sha", "2026-11-06")
+    con.commit()
+    monkeypatch.setattr(server, "DB", str(tmp_path / "c.db"))
+    assert "Código Civil" in server.cl_articulo(1, "31", cuerpo="Código Civil")["cita"]
+    assert "Ley 14.908" in server.cl_articulo(1, "31", cuerpo="14.908")["cita"]
+    assert server.cl_articulo(1, "31", cuerpo="Inexistente")["error"].startswith("[not_found]")
+
+
 def test_server_json_valido():
     import pathlib
     d = json.loads(pathlib.Path("server.json").read_text(encoding="utf-8"))
@@ -297,3 +317,49 @@ def test_documento_dos_llamadas_no_se_pisan(tmp_path, monkeypatch):
     a = documentos.generar("poder-especial", datos, ("odt",))
     b = documentos.generar("poder-especial", datos, ("odt",))
     assert a["archivos"]["odt"] != b["archivos"]["odt"]
+
+
+XML_COMPENDIO = b"""<Norma normaId="1" fechaVersion="2020-01-01" derogado="no derogado">
+<EstructuraFuncional tipoParte="Articulo" idParte="a">
+ <Metadatos><NombreParte>2</NombreParte><TituloParte>ARTICULO 2 (CODIGO CIVIL)</TituloParte></Metadatos>
+ <Texto>aprueba el codigo</Texto>
+ <EstructuraFuncional tipoParte="Articulo" idParte="a1">
+  <Metadatos><NombreParte>31</NombreParte></Metadatos>
+  <Texto>Art. 31. Parentesco por afinidad.</Texto>
+ </EstructuraFuncional>
+</EstructuraFuncional>
+<EstructuraFuncional tipoParte="Articulo" idParte="b">
+ <Metadatos><NombreParte>7 (LEY SOBRE ABANDONO DE FAMILIA)</NombreParte></Metadatos>
+ <Texto>aprueba la ley</Texto>
+ <EstructuraFuncional tipoParte="Articulo" idParte="b1">
+  <Metadatos><NombreParte>31</NombreParte></Metadatos>
+  <Texto>Art. 31. Compraventa.</Texto>
+ </EstructuraFuncional>
+</EstructuraFuncional>
+</Norma>"""
+
+
+def test_parsear_compendio_atribuye_cuerpo():
+    d = bcn.parsear(XML_COMPENDIO)
+    arts = [p for p in d["partes"] if p["nombre"] == "31"]
+    assert [p["cuerpo_corto"] for p in arts] == ["Código Civil", "Ley 14.908"]
+    assert arts[0]["cuerpo"].startswith("ARTICULO 2")
+
+
+def test_cita_usa_cuerpo_corto():
+    meta = {"id_norma": 172986, "tipo": "Decreto con Fuerza de Ley",
+            "numero": "1", "descargado": ""}
+    parte = {"nombre": "1793 (DEL ART. 2)", "texto": "Art. 1793.",
+             "fecha_version": "2000-05-30",
+             "cuerpo": "ARTÍCULO 2 (CÓDIGO CIVIL)", "cuerpo_corto": "Código Civil"}
+    c = citas.construir(meta, parte)
+    assert c["cita"] == "Código Civil, art. 1793, texto vigente desde 2000-05-30"
+    assert c["norma"] == "Código Civil"
+    anexa = dict(parte, nombre="31 (DEL ART. 7)", cuerpo_corto="Ley 14.908")
+    assert citas.construir(meta, anexa)["cita"].startswith("Ley 14.908, art. 31")
+
+
+def test_db_conectar_anade_columnas_de_cuerpo(tmp_path):
+    con = db.conectar(tmp_path / "x.db")
+    cols = {f[1] for f in con.execute("PRAGMA table_info(parte)")}
+    assert {"cuerpo", "cuerpo_corto"} <= cols

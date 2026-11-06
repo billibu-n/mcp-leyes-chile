@@ -8,7 +8,7 @@ from pathlib import Path
 
 from mcp.server.mcpserver import MCPServer
 
-from . import bcn, citas, db, documentos, notaria
+from . import __version__, bcn, citas, db, documentos, notaria
 
 CASA = Path(os.environ.get("MCP_LEYES_HOME") or Path.home() / ".mcp-leyes-chile")
 DB = os.environ.get("MCP_LEYES_DB", str(CASA / "corpus.db"))
@@ -21,7 +21,7 @@ La cobertura real se consulta con cl_cobertura; no la supongas."""
 
 mcp = MCPServer(
     name="mcp-leyes-chile",
-    version="0.2.2",
+    version=__version__,
     instructions=INSTRUCCIONES,
     description="Leyes chilenas con cita verificable, fichas notariales y documentos .odt/.pdf",
 )
@@ -63,8 +63,11 @@ def cl_buscar(q: str, limite: int = 10, solo_vigentes: bool = True) -> dict:
 
 
 @mcp.tool()
-def cl_articulo(id_norma: int, articulo: str, vigente_al: str = "") -> dict:
-    """Texto literal + objeto de cita. Sin fuente no devuelve texto."""
+def cl_articulo(id_norma: int, articulo: str, vigente_al: str = "", cuerpo: str = "") -> dict:
+    """Texto literal + objeto de cita. Sin fuente no devuelve texto.
+
+    `cuerpo` desambigua compendios (DFL 1): "Código Civil", "Ley 4.808", etc.
+    """
     if vigente_al:
         motivo = bcn.fecha_valida(vigente_al)
         if motivo:
@@ -92,6 +95,16 @@ def cl_articulo(id_norma: int, articulo: str, vigente_al: str = "") -> dict:
                     "fuente": f"https://www.leychile.cl/N?i={id_norma}&f={vigente_al}",
                     "aviso": citas.AVISO, "hueco": hallado["hueco"]}
         partes = db.traer_articulo(con, id_norma, articulo)
+        if cuerpo:
+            aguja = bcn.norm(cuerpo)
+            partes = [p for p in partes
+                      if aguja in bcn.norm((p.get("cuerpo_corto") or "") + " " + (p.get("cuerpo") or ""))]
+            if not partes:
+                disponibles = sorted({p.get("cuerpo_corto") or p.get("cuerpo") or "sin etiqueta"
+                                      for p in db.traer_articulo(con, id_norma, articulo)})
+                return _error("not_found",
+                              f"el articulo {articulo} no esta en el cuerpo '{cuerpo}'; "
+                              f"cuerpos disponibles: {', '.join(disponibles) or 'ninguno'}")
         if not partes:
             nombre = citas.nombre_norma(meta)
             return _error("not_found",

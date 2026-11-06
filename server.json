@@ -3,7 +3,7 @@
   "name": "io.github.billibu-n/mcp-leyes-chile",
   "title": "MCP Leyes Chile",
   "description": "Leyes chilenas con cita verificable, fichas notariales y documentos .odt/.pdf",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "license": "Apache-2.0",
   "repository": {
     "url": "https://github.com/billibu-n/mcp-leyes-chile",
@@ -13,7 +13,7 @@
     {
       "registryType": "pypi",
       "identifier": "mcp-leyes-chile",
-      "version": "0.2.2",
+      "version": "0.2.4",
       "transport": {
         "type": "stdio"
       }

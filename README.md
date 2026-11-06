@@ -2,7 +2,7 @@
 
 mcp-name: io.github.billibu-n/mcp-leyes-chile
 
-Servidor MCP de leyes chilenas con **cita verificable** (v0.2.2), fichas notariales curadas y
+Servidor MCP de leyes chilenas con **cita verificable** (v0.2.4), fichas notariales curadas y
 generación de documentos **`.odt`** (editable), `.pdf` y `.docx`.
 
 No es asesoría legal. Es una herramienta para que una persona llegue a la notaría con el
@@ -13,7 +13,7 @@ borrador hecho y para que un abogado no presente una cita que no exista.
 | Tool | Para qué |
 |---|---|
 | `cl_buscar` | Busca artículos por texto en el corpus local (SQLite FTS5) |
-| `cl_articulo` | Texto literal + cita con `vigente_desde`, fuente y aviso; acepta `vigente_al` (AAAA-MM-DD) para la versión histórica |
+| `cl_articulo` | Texto literal + cita con `vigente_desde`, fuente y aviso; acepta `vigente_al` (AAAA-MM-DD) para la versión histórica y `cuerpo` para desambiguar compendios |
 | `cl_versiones` | Historial de versiones de una norma (83 en el DL 825) |
 | `cl_citar` | Verifica un lote: `ok`, `faltantes`, `sin_fuente_verificable` |
 | `cl_notaria` | 27 fichas: trámite, arancel y estado por campo (24 generadas del Decreto 587) |
@@ -55,13 +55,42 @@ python -m mcp_leyes --formulario 8801
 # http://127.0.0.1:8801/  -> pregunta los campos -> .odt + .pdf
 ```
 
+## Skill para agentes
+
+La carpeta [`skill/`](skill/) es la misma herramienta empaquetada como *skill* para
+clientes de agentes (Claude, Agensi, etc.): `SKILL.md`, dos referencias y un script
+sin dependencias que lee un corpus local en `data/corpus.jsonl`.
+
+```bash
+cd skill
+python3 scripts/consulta.py normas
+python3 scripts/consulta.py buscar "compraventa" --limite 5
+python3 scripts/consulta.py articulo 172986 1793
+```
+
+El corpus (`skill/data/corpus.jsonl`, 6.852 textos, 5,6 MB) no se versiona: se regenera
+con `python exportar-corpus.py` (descarga el XML de LeyChile y conserva la jerarquía de
+compendios) o se toma del ZIP publicado en cada release (`leyes-chile-skill.zip`,
+1,1 MB). La skill no usa red, no escribe archivos y no llama al MCP: es autónoma.
+
 ## Publicación
 
-En el registro oficial: **`io.github.billibu-n/mcp-leyes-chile`** 0.2.2
+En el registro oficial: **`io.github.billibu-n/mcp-leyes-chile`** 0.2.4
 (`https://registry.modelcontextprotocol.io`), paquete PyPI `mcp-leyes-chile`.
 
 `server.json` cumple el esquema del registro: `registryType: pypi`, `transport: stdio`.
 Publicar requiere `mcp-publisher login github` y autorización del dueño.
+
+## Qué cambió en 0.2.4 y 0.2.3
+
+**0.2.4 — compendios, segunda parte.** `cl_articulo` acepta `cuerpo="Ley 4.808"` y
+devuelve el artículo de ese cuerpo dentro del DFL 1; si el cuerpo no existe, el error
+lista los disponibles. Sin `cuerpo` se mantiene el primero y se declara `coincidencias`.
+
+**0.2.3 — atribución.** El DFL 1 mezcla el Código Civil con leyes anexas (Registro
+Civil, menores, abandono de familia, herencias). El parser perdía la jerarquía y citaba
+un "art. 31" de la Ley 4.808 como "Código Civil, art. 31". Ahora cada parte guarda
+`cuerpo` y `cuerpo_corto`, la cita usa el cuerpo real y la base existente se migra sola.
 
 ## Qué cambió en 0.2.2
 
@@ -105,7 +134,7 @@ en el corpus y las claves con sufijo `(DEL ART. 2)`.
 ## Pruebas
 
 ```bash
-python -m pytest -q                     # 30 tests
+python -m pytest -q                     # 34 tests
 python -m eval.estres                   # 41 comprobaciones de estrés por stdio
 python -m eval.correr --banco 60        # 66 tareas: exactitud 1.0, 0 alucinaciones
 python -m eval.ejercicio                # 10 tareas de razonamiento (22/22)

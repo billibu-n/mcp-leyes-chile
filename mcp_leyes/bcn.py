@@ -114,6 +114,35 @@ def _ln(elem) -> str:
     return q.localname
 
 
+def corto_cuerpo(titulo: str) -> str:
+    """Etiqueta del cuerpo legal dueno del articulo.
+
+    El DFL 1 es un compendio: el Codigo Civil vive bajo su 'Articulo 2' y las
+    leyes anexas bajo otros articulos. Sin esto, un art. 31 de la Ley 4.808 se
+    citaba como 'Codigo Civil, art. 31'.
+    """
+    import re
+    u = norm(titulo)
+    for aguja, etiqueta in (
+        ("codigo civil", "Código Civil"),
+        ("codigo del trabajo", "Código del Trabajo"),
+        ("codigo de comercio", "Código de Comercio"),
+        ("codigo penal", "Código Penal"),
+        ("constitucion politica", "Constitución"),
+        ("registro civil", "Ley 4.808"),
+        ("cambio de nombres", "Ley 17.344"),
+        ("ley de menores", "Ley 16.618"),
+        ("abandono de familia", "Ley 14.908"),
+        ("impuesto a las herencias", "Ley 16.271"),
+    ):
+        if aguja in u:
+            return etiqueta
+    m = re.search(r"ley\s*(?:n[.º°]?\s*)?(\d[\d.]*)", u)
+    if m:
+        return "Ley " + m.group(1).rstrip(".")
+    return ""
+
+
 def parsear(xml_bytes: bytes) -> dict:
     """Devuelve {meta, partes[]} en orden documental."""
     from lxml import etree
@@ -146,33 +175,64 @@ def parsear(xml_bytes: bytes) -> dict:
 
     partes = []
     orden = 0
-    for elem in raiz.iter():
-        if _ln(elem) != "EstructuraFuncional":
-            continue
-        orden += 1
-        nombre = titulo = texto = ""
+
+    def recorrer(elem, pila):
+        nonlocal orden
         for hijo in elem:
-            n = _ln(hijo)
-            if n == "Metadatos":
-                for m in hijo:
-                    if _ln(m) == "NombreParte":
-                        nombre = (m.text or "").strip()
-                    elif _ln(m) == "TituloParte":
-                        titulo = (m.text or "").strip()
-            elif n == "Texto":
-                texto = (hijo.text or "").strip()
-        partes.append({
-            "orden": orden,
-            "id_parte": elem.get("idParte"),
-            "tipo": elem.get("tipoParte") or "",
-            "clase": norm(elem.get("tipoParte") or ""),
-            "nombre": nombre,
-            "titulo": titulo,
-            "texto": texto,
-            "derogado": elem.get("derogado") or "",
-            "transitorio": elem.get("transitorio") or "",
-            "fecha_version": elem.get("fechaVersion") or "",
-        })
+            if not isinstance(hijo.tag, str):
+                continue
+            if _ln(hijo) != "EstructuraFuncional":
+                recorrer(hijo, pila)
+                continue
+            orden += 1
+            nombre = titulo = texto = ""
+            for x in hijo:
+                n = _ln(x)
+                if n == "Metadatos":
+                    for m in x:
+                        if _ln(m) == "NombreParte":
+                            nombre = (m.text or "").strip()
+                        elif _ln(m) == "TituloParte":
+                            titulo = (m.text or "").strip()
+                elif n == "Texto":
+                    texto = (x.text or "").strip()
+            nueva = pila + [(nombre, titulo)]
+            # El cuerpo es el nodo de nivel superior: su titulo o, si no lo
+            # tiene, el nombre con la ley entre parentesis ("7 (LEY ...)").
+            nombre0, titulo0 = nueva[0]
+            cuerpo = titulo0 or (nombre0 if "(" in nombre0 else "")
+            if not cuerpo:
+                for _, tit in nueva[1:]:
+                    u = norm(tit)
+                    if any(k in u for k in ("codigo", "ley", "constitucion")):
+                        cuerpo = tit
+                        break
+            if not cuerpo:
+                cuerpo = nombre0
+            partes.append({
+                "orden": orden,
+                "id_parte": hijo.get("idParte"),
+                "tipo": hijo.get("tipoParte") or "",
+                "clase": norm(hijo.get("tipoParte") or ""),
+                "nombre": nombre,
+                "titulo": titulo,
+                "texto": texto,
+                "derogado": hijo.get("derogado") or "",
+                "transitorio": hijo.get("transitorio") or "",
+                "fecha_version": hijo.get("fechaVersion") or "",
+                "cuerpo": cuerpo,
+                "cuerpo_corto": corto_cuerpo(cuerpo),
+            })
+            recorrer(hijo, nueva)
+
+    recorrer(raiz, [])
+    # Normas de un solo cuerpo (Codigo del Trabajo, Comercio, Penal...): si
+    # ninguna parte trae etiqueta, el titulo de la norma es el cuerpo.
+    if not any(p["cuerpo_corto"] for p in partes):
+        por_defecto = corto_cuerpo(meta.get("titulo", ""))
+        if por_defecto:
+            for p in partes:
+                p["cuerpo_corto"] = por_defecto
     return {"meta": meta, "partes": partes}
 
 
